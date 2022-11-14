@@ -1,7 +1,5 @@
 import java.util.*;
 
-import javax.smartcardio.CardTerminals.State;
-
 public class StuckWin {
 
 	static final Scanner input = new Scanner(System.in);
