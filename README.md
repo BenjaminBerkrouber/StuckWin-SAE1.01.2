@@ -9,7 +9,6 @@
 
 [![Contributors][contributors-shield]][contributors-url] [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
-Then you can delete these lines !
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
