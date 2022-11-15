@@ -40,12 +40,22 @@ Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suiva
 
 - Verifié la fin de partie et afficher le gagnant 
 
+### Travail demander SAE0.2
+
+- Conception d'un ordinateur jouant pour les pion rouge
+
+- Concevoir deux algorithme de difficulté différente pouvant jouer l'un contre l'autre
+
+- Analyser les résultat des partie jouer
+
+### Travail suplémentaire SAE0.1++
+ 
+- Concevoir interface graphique avec la bibliothèque StdDraw
 
 Here you can describe the project, why you made it and **for who you made it**, but mostly don't forget to add a screenshot like the image above AND a link to the demo like this : https://NicolasBrondin.github.io/basic-readme-template/
 
 ### Built With
 
-* 🖊️ Markdown
 * 🐙 Github
 * 💻 VS Code
 
@@ -69,7 +79,6 @@ sudo apt-get install git
 git clone https://github.com/BenjaminBerkrouber/SAE1.02
 ```
 2. Open VS Code
-3. Install Markdown Preview Enhancement plugin
 3. Open the StuckWin.java file and execute the following command
 ```sh
 javac StuckWin.java
