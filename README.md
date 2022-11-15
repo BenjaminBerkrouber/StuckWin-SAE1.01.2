@@ -1,6 +1,8 @@
 # SAE1.01 & 1.02 | Stuckwin
 
-##Description projet  
+## Description projet  
+
+### Consigne 
 
 Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suivantes :
 
@@ -13,3 +15,35 @@ Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suiva
 - si lorsque vient son tour, un joueur n’a plus aucune possibilité de déplacement de ses jetons, il gagne la partie
 
 Variante : si lorsque vient son tour, un joueur n’a plus aucune possibilité de déplacement de ses jetons, il perd la partie,
+
+### Organisation 
+
+- Affichage (Console/Interface)
+
+- Possibilité de Déplacement
+
+- Déplacement 
+
+- IA (capable de jouer)
+
+- Fin de partie 
+
+## Installation 
+
+Pour jouer à stuck win : ...
+
+## Contributor 
+
+### Commit
+
+Les commit sont push sous différente appélation 
+
+Pour les modification lié à l'affichage
+- affichage.0.1
+- affichage.0.2
+
+Pour les modification liée au déplacement
+- deplacement.0.1
+
+Pour les modification liée au possibilité de déplacement
+- deplacement.0.1
