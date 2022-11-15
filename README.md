@@ -30,6 +30,8 @@ Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suiva
 - un jeton ne peut pas sauter un ou plusieurs autres jetons,
 - si lorsque vient son tour, un joueur n’a plus aucune possibilité de déplacement de ses jetons, il gagne la partie,
 
+### Test
+
 Here you can describe the project, why you made it and **for who you made it**, but mostly don't forget to add a screenshot like the image above AND a link to the demo like this : https://NicolasBrondin.github.io/basic-readme-template/
 
 ### Built With
