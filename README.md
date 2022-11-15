@@ -92,7 +92,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Your Name - [@benjami_bkr](https://twitter.com/@benjami_bkr) - email
 
 Project Link: [https://github.com/BenjaminBerkrouber/SAE1.02](https://github.com/BenjaminBerkrouber/SAE1.02)
 
