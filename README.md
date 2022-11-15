@@ -48,9 +48,10 @@ git clone https://github.com/BenjaminBerkrouber/SAE1.02
 ```
 2. Open VS Code
 3. Install Markdown Preview Enhancement plugin
-3. Open the README.md file and execute the following command
+3. Open the StuckWin.java file and execute the following command
 ```sh
-ctrl+k v
+javac StuckWin.java
+java StuckWin
 ```
 
 
