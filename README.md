@@ -95,3 +95,20 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 Your Name - [@benjami_bkr](https://twitter.com/@benjami_bkr) - email
 
 Project Link: [https://github.com/BenjaminBerkrouber/SAE1.02](https://github.com/BenjaminBerkrouber/SAE1.02)
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/NicolasBrondin/basic-readme-template.svg?style=flat-square
+[contributors-url]: https://github.com/NicolasBrondin/basic-readme-template/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/NicolasBrondin/basic-readme-template.svg?style=flat-square
+[forks-url]: https://github.com/NicolasBrondin/basic-readme-template/network/members
+[stars-shield]: https://img.shields.io/github/stars/NicolasBrondin/basic-readme-template.svg?style=flat-square
+[stars-url]: https://github.com/NicolasBrondin/basic-readme-template/stargazers
+[issues-shield]: https://img.shields.io/github/issues/NicolasBrondin/basic-readme-template.svg?style=flat-square
+[issues-url]: https://github.com/NicolasBrondin/basic-readme-template/issues
+[license-shield]: https://img.shields.io/github/license/NicolasBrondin/basic-readme-template.svg?style=flat-square
+[license-url]: https://github.com/NicolasBrondin/basic-readme-template/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/othneildrew
+[product-screenshot]: docs/cover.jpg
