@@ -17,7 +17,12 @@ Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suiva
 Variante : si lorsque vient son tour, un joueur n’a plus aucune possibilité de déplacement de ses jetons, il perd la partie,
 
 <img src="http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/rougesGagnent.png" style="width=10px;"></img>
-![mon image](http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/rougesGagnent.png)
+
+<img
+  src="http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/rougesGagnent.png"
+  alt="Alt text"
+  title="Optional title"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">
 
 ### Organisation 
 
