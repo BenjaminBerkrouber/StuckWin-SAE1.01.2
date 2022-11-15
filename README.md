@@ -14,38 +14,38 @@
 
 ![StuckWin game](http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/numPos.png)
 
-__Le projet Stuck Win est le projet de la SAE1.01 & SAE1.02 du BUT informatique S1 département IUT Belfort Monbeillard.__
+__The Stuck Win project is the SAE1.01 & SAE1.02 project of the BUT informatique S1 department IUT Belfort Monbeillard.__
 
-Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suivantes :
-- le plateau de jeu, reproduit ci-dessus, comporte 37 emplacements, ou cases, hexagonales répartis sur un plateau de forme hexagonale lui aussi,
-- le jeu comporte 13 jetons bleus et 13 jetons rouges tous identiques,
-- un joueur détient les jetons bleus, l’autre les rouges,
-- les bleus commencent la partie,
-- chaque joueur déplace à son tour un jeton sur un emplacement libre, situé immédiatement devant lui. Un jeton n’a donc au maximum que trois emplacements de destination possibles. Par exemple : en début de partie, le jeton bleu en E3 ne peut être déplacé que sur D3, D4 ou E4.
-- un jeton ne peut pas sauter un ou plusieurs autres jetons,
-- si lorsque vient son tour, un joueur n’a plus aucune possibilité de déplacement de ses jetons, il gagne la partie,
+Stuckwin is a game for two players with the following simple rules:
+- the game board, reproduced above, has 37 hexagonal slots, or squares, spread over a hexagonal board,
+- the game has 13 blue chips and 13 red chips, all identical,
+- one player has the blue chips, the other the red ones,
+- the blue ones start the game,
+- each player in turn moves a token to a free space immediately in front of him. A token has a maximum of three possible destinations. For example: at the beginning of the game, the blue chip in E3 can only be moved to D3, D4 or E4.
+- a token cannot skip one or more other tokens,
+- If, when it is his turn, a player has no more possibilities to move his chips, he wins the game,
 
 ### Travail demander SAE0.1
 
-- Afficher le plateau de jeu
+- Display the game board
 
-- Verifier si un pion peux etre déplacé
+- Check if a pawn can be moved
 
-- Déplacer un pion
+- Moving a pawn
 
-- Verifié la fin de partie et afficher le gagnant 
+- Check the end of the game and display the winner 
 
 ### Travail demander SAE0.2
 
-- Conception d'un ordinateur jouant pour les pion rouge
+- Design of an AI playing for the red pawns
 
-- Concevoir deux algorithme de difficulté différente pouvant jouer l'un contre l'autre
+- Design two algorithms of different difficulty that can play against each other
 
-- Analyser les résultat des partie jouer
+- Analyze the results of the games played
 
 ### Travail suplémentaire SAE0.1++
  
-- Concevoir interface graphique avec la bibliothèque StdDraw
+- Design graphical interface with the StdDraw library
 
 Here you can describe the project, why you made it and **for who you made it**, but mostly don't forget to add a screenshot like the image above AND a link to the demo like this : https://NicolasBrondin.github.io/basic-readme-template/
 
