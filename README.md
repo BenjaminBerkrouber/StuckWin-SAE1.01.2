@@ -17,7 +17,7 @@ Then you can delete these lines !
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![StuckWin game]([data/DemoSW.gif](https://github.com/BenjaminBerkrouber/SAE1.02/blob/master/demoSW.gif))
+![StuckWin game]([data/DemoSW.gif](https://github.com/BenjaminBerkrouber/SAE1.02/demoSW.gif))
 
 __Le projet Stuck Win est le projet de la SAE1.01 & SAE1.02 du BUT informatique S1 département IUT Belfort Monbeillard.__
 
