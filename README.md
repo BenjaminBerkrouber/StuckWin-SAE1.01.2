@@ -44,7 +44,7 @@ sudo apt-get install git
  
 1. Clone the repo
 ```sh
-git clone https://github.com/NicolasBrondin/basic-readme-template
+git clone https://github.com/BenjaminBerkrouber/SAE1.02
 ```
 2. Open VS Code
 3. Install Markdown Preview Enhancement plugin
