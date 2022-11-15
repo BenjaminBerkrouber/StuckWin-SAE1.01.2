@@ -9,10 +9,6 @@
 
 [![Contributors][contributors-shield]][contributors-url] [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `github_repo`, `twitter_handle`, `email`
-
 Then you can delete these lines !
 <!-- ABOUT THE PROJECT -->
 ## About The Project
