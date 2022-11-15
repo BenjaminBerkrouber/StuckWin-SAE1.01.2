@@ -17,7 +17,7 @@ Then you can delete these lines !
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/numPos.png)
 
 Here you can describe the project, why you made it and **for who you made it**, but mostly don't forget to add a screenshot like the image above AND a link to the demo like this : https://NicolasBrondin.github.io/basic-readme-template/
 
