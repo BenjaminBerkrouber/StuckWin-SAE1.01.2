@@ -19,7 +19,7 @@ Then you can delete these lines !
 
 [![StuckWin game][product-screenshot]](http://info.iut-bm.univ-fcomte.fr/staff/perrot/DUT-INFO/S1/SAE/SAE101102/_images/numPos.png)
 
-__Le projet Stuck Win est le projet de la SAE1.01 & SAE1.02 du BUT informatique S1 département IUT Belfort Monbeillard.
+__Le projet Stuck Win est le projet de la SAE1.01 & SAE1.02 du BUT informatique S1 département IUT Belfort Monbeillard.__
 
 Stuckwin est un jeu à deux joueurs dont les règles simplissimes sont les suivantes :
 - le plateau de jeu, reproduit ci-dessus, comporte 37 emplacements, ou cases, hexagonales répartis sur un plateau de forme hexagonale lui aussi,
