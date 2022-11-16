@@ -3,6 +3,7 @@ import java.util.*;
 public class StuckWin {
 
 	static final Scanner input = new Scanner(System.in);
+	
 	public static final String RED_BACKGROUND = "\033[41m"; // RED
 	public static final String BLUE_BACKGROUND = "\033[44m"; // BLUE
 	public static final String WHITE_BACKGROUND = "\033[47m"; // WHITE
@@ -12,11 +13,18 @@ public class StuckWin {
 	private static final double BOARD_SIZE = 7;
 
 	enum Result {
-		OK, BAD_COLOR, DEST_NOT_FREE, EMPTY_SRC, TOO_FAR, EXT_BOARD, EXIT
+		OK
+		, BAD_COLOR
+		, DEST_NOT_FREE
+		, EMPTY_SRC
+		, TOO_FAR
+		, EXT_BOARD
+		, EXIT
 	}
 
 	enum ModeMvt {
-		REAL, SIMU
+		REAL
+		, SIMU
 	}
 
 	final char[] joueurs = { 'B', 'R' };
@@ -31,7 +39,7 @@ public class StuckWin {
 			{ '-', 'B', 'B', 'B', '.', '.', '.', '-' },
 			{ '-', 'B', 'B', 'B', 'B', '.', '-', '-' },
 			{ '-', 'B', 'B', 'B', 'B', '-', '-', '-' },
-	};
+	};	
 
 	/**
 	 * Déplace un pion ou simule son déplacement
@@ -45,7 +53,17 @@ public class StuckWin {
 	 *         EXIT} selon le déplacement
 	 */
 	Result deplace(char couleur, String lcSource, String lcDest, ModeMvt mode) {
-		throw new java.lang.UnsupportedOperationException("à compléter");
+
+		throw new java.lang.UnsupportedOperationException("à compléter déplacmeent");
+
+		// for(int i=0;i<state.length;i++)
+		// {
+		// 	for(int j=0;j<state[i].length;j++)
+		// 	{
+		// 		System.out.print(state[lcSource][lcDest]);
+		// 	}
+		// }
+		// return StuckWin.Result.OK;
 	}
 
 	/**
@@ -60,7 +78,7 @@ public class StuckWin {
 	 */
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 		// votre code ici. Supprimer la ligne ci-dessous.
-		throw new java.lang.UnsupportedOperationException("à compléter");
+		throw new java.lang.UnsupportedOperationException("à compléter possible déplacmeent");
 	}
 
 	/**
@@ -68,6 +86,205 @@ public class StuckWin {
 	 * l'attribut d'état "state"
 	 */
 	void affiche() {
+		int M = state.length;
+		int N = state[0].length;
+
+		// Affichage des diagonale de en haut à gauche de state
+		for(int ligne = 0; ligne< state.length ; ligne++)
+		{
+			for(int i = state.length; i>= ligne; i--)
+			{
+				System.out.print("  ");
+			}
+			for(int column = ligne, diag=0; diag<state[0].length && column>= 0; column--,diag++)
+			{
+				// Espace entre les case
+				System.out.print("  ");
+
+				char currentCase = state[ligne][column];
+				String nameLigne = "";
+				String nameColumn = "";
+
+				switch (ligne) {
+					case 0:
+						nameLigne = "A";
+						break;
+					case 1:
+						nameLigne = "B";
+						break;
+					case 2:
+						nameLigne = "C";
+						break;
+					case 3:
+						nameLigne = "D";
+						break;
+					case 4:
+						nameLigne = "E";
+						break;
+					case 5:
+						nameLigne = "F";
+						break;
+					case 6:
+						nameLigne = "G";
+						break;
+					default:
+						nameLigne = " ";
+				}
+				switch (column) {
+					case 0:
+						nameColumn = "0";
+						break;
+					case 1:
+						nameColumn = "1";
+						break;
+					case 2:
+						nameColumn = "2";
+						break;
+					case 3:
+						nameColumn = "3";
+						break;
+					case 4:
+						nameColumn = "4";
+						break;
+					case 5:
+						nameColumn = "5";
+						break;
+					case 6:
+						nameColumn = "6";
+						break;
+					case 7:
+						nameColumn = "7";
+						break;
+					default:
+						nameColumn = "";
+				}	
+
+				switch (currentCase) {
+					case 'B':
+						System.out.print(BLUE_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case 'R':
+						System.out.print(RED_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case '.':
+						System.out.print(WHITE_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case '-':
+						System.out.print(BLACK_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);						
+								break;
+					default:
+						System.out.print("  ");
+				}
+			}
+			System.out.println("");
+		}
+
+		// Affichage des diagonale du bas à droite de state
+		for(int ligne = 1; ligne < state.length; ligne++)
+		{
+			for(int i = 0; i<= ligne; i++)
+			{
+				System.out.print("  ");
+			}
+
+			for (int column = state[0].length - 1, diag = ligne; diag < state.length && column >= 0; column--, diag++) {
+				
+				// Espace entre les case
+				System.out.print("  ");
+
+				char currentCase = state[ligne][column];
+				String nameLigne = "";
+				String nameColumn = "";
+
+				switch (ligne) {
+					case 0:
+						nameLigne = "A";
+						break;
+					case 1:
+						nameLigne = "B";
+						break;
+					case 2:
+						nameLigne = "C";
+						break;
+					case 3:
+						nameLigne = "D";
+						break;
+					case 4:
+						nameLigne = "E";
+						break;
+					case 5:
+						nameLigne = "F";
+						break;
+					case 6:
+						nameLigne = "G";
+						break;
+					default:
+						nameLigne = " ";
+				}
+				switch (column) {
+					case 0:
+						nameColumn = "0";
+						break;
+					case 1:
+						nameColumn = "1";
+						break;
+					case 2:
+						nameColumn = "2";
+						break;
+					case 3:
+						nameColumn = "3";
+						break;
+					case 4:
+						nameColumn = "4";
+						break;
+					case 5:
+						nameColumn = "5";
+						break;
+					case 6:
+						nameColumn = "6";
+						break;
+					case 7:
+						nameColumn = "7";
+						break;
+					default:
+						nameColumn = "";
+				}	
+
+				switch (currentCase) {
+					case 'B':
+						System.out.print(BLUE_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case 'R':
+						System.out.print(RED_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case '.':
+						System.out.print(WHITE_BACKGROUND
+								+ nameLigne + nameColumn
+								+ RESET);
+						break;
+					case '-':
+						System.out.print(BLACK_BACKGROUND
+						+ nameLigne + nameColumn
+						+ RESET);						
+						break;
+					default:
+						System.out.print("  ");
+				}
+			}
+			System.out.println("");
+		}
 
 		for (int ligne = 0; ligne < state.length; ligne++) {
 
@@ -159,7 +376,6 @@ public class StuckWin {
 			}
 			System.out.println("");// Retour à la ligne (passer de A -> B...)
 		}
-
 	}
 
 	/**
