@@ -100,15 +100,15 @@ Project Link: [https://github.com/BenjaminBerkrouber/SAE1.02](https://github.com
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/NicolasBrondin/basic-readme-template.svg?style=flat-square
-[contributors-url]: https://github.com/NicolasBrondin/basic-readme-template/graphs/contributors
+[contributors-url]: https://https://github.com/BenjaminBerkrouber/StuckWin-SAE1.01.2/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/NicolasBrondin/basic-readme-template.svg?style=flat-square
-[forks-url]: https://github.com/NicolasBrondin/basic-readme-template/network/members
+[forks-url]: https://https://github.com/BenjaminBerkrouber/StuckWin-SAE1.01.2/network/members
 [stars-shield]: https://img.shields.io/github/stars/NicolasBrondin/basic-readme-template.svg?style=flat-square
-[stars-url]: https://github.com/NicolasBrondin/basic-readme-template/stargazers
+[stars-url]: https://github.com/https://github.com/BenjaminBerkrouber/StuckWin-SAE1.01.2/stargazers
 [issues-shield]: https://img.shields.io/github/issues/NicolasBrondin/basic-readme-template.svg?style=flat-square
-[issues-url]: https://github.com/NicolasBrondin/basic-readme-template/issues
+[issues-url]: https://https://github.com/BenjaminBerkrouber/StuckWin-SAE1.01.2/issues
 [license-shield]: https://img.shields.io/github/license/NicolasBrondin/basic-readme-template.svg?style=flat-square
-[license-url]: https://github.com/NicolasBrondin/basic-readme-template/blob/master/LICENSE.txt
+[license-url]: https://ghttps://github.com/BenjaminBerkrouber/StuckWin-SAE1.01.2/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: docs/cover.jpg
