@@ -60,6 +60,7 @@ public class StuckWin {
 		char columnSource = lcSource.charAt(1);
 		char ligneDest = lcDest.charAt(0);
 		char columnDest = lcDest.charAt(1);
+		char currentCase = state[ligneSource][columnSource];
 
 		switch(ligneSource){
 			case 'A': ligneSource = 0;break;
@@ -79,12 +80,23 @@ public class StuckWin {
 			case '6': columnSource = 5;break;
 			case '7': columnSource = 6;break;
 		}
+
 		possibleDests(couleur, ligneSource, columnSource);		
 
-		char currentCase = state[ligneSource][columnSource];
+		switch(couleur)
+		{
+			case 'R': 
+				
+				break;
+			case 'B':
+				
+				break;
+			default: 
+				result = Result.EMPTY_SRC;
+		}
 
 		switch(currentCase){
-			case 1 : ; break;
+			case 'R' : ; break;
 			default: ;
 		}
 
@@ -121,59 +133,74 @@ public class StuckWin {
 	 * Affiche le plateau de jeu dans la configuration portée par
 	 * l'attribut d'état "state"
 	 */
-	
 	void affiche() {
+		// Déclaration des variable pour parcourire le tableau
+		int column, line, diag, space;
+        char lettreline = ' ';
 
-		int ligne, column, diag, space;
-        char lettreligne = ' ';
+		// Parcours des colonne de la moitier droite du tableau
+		for(column = 0; column < state.length; column++){
 
-		for(ligne = 0; ligne < state.length; ligne++){
-
-			for (space = state.length-2; space >= ligne; space--) {
+			// Ajout d'espace pour la partie haute du losange
+			for (space = state.length -2; space >= column; space--) {
 				System.out.print("  ");
 			}
-			for (column = 0, diag = 7 - ligne; column < 1 + ligne; column++, diag++){
-				switch(column){
-					case 0: lettreligne = 'A';break;
-					case 1: lettreligne = 'B';break;
-					case 2: lettreligne = 'C';break;
-					case 3: lettreligne = 'D';break;
-					case 4: lettreligne = 'E';break;
-					case 5: lettreligne = 'F';break;
-					case 6: lettreligne = 'G';break;
+			
+			// Parcours des diagonale du haut à droite vers le centre
+			for (line = 0, diag = 7 - column; line < 1 + column; line++, diag++){
+				
+				// Nomination des lignes en lettre de A->G pour 0->7 (nombre de ligne dans le tableau)
+				switch(line){
+					case 0: lettreline = 'A';break;
+					case 1: lettreline = 'B';break;
+					case 2: lettreline = 'C';break;
+					case 3: lettreline = 'D';break;
+					case 4: lettreline = 'E';break;
+					case 5: lettreline = 'F';break;
+					case 6: lettreline = 'G';break;
 				}
-				switch(state[column][diag]){
-					case '.': System.out.print(BLACK_BACKGROUND + WHITE_BACKGROUND + lettreligne + Integer.toString(diag) + RESET);break;
-					case 'R': System.out.print(RED_BACKGROUND + lettreligne + Integer.toString(diag)+ RESET);;break;
-					case 'B': System.out.print(BLUE_BACKGROUND + lettreligne + Integer.toString(diag) + RESET);break;
+
+				/**  Numeration des colonnes de 0->7 pour 0->7 (nombre colonne dans le tableau) 
+				* + Affichage des case (Fond-couleur + Nomination ligne + numeration colon + Reset style)
+				*/
+				switch(state[line][diag]){
+					case '.': System.out.print(WHITE_BACKGROUND + lettreline + Integer.toString(diag) + RESET);break;
+					case 'R': System.out.print(RED_BACKGROUND + lettreline + Integer.toString(diag)+ RESET);;break;
+					case 'B': System.out.print(BLUE_BACKGROUND + lettreline + Integer.toString(diag) + RESET);break;
 					case '-': System.out.print("  ");
 				}
+				// Ajout des espaces entre les cases
 				System.out.print("  ");
 			}
-			
-			System.out.println();
-			
+			// Retour ligne affichange du plateau
+			System.out.println();	
 		}		
-		for(ligne = 0; ligne < 6; ligne++){
-			for (space = 0; space <= ligne; space++) 
+
+		// Parcours des colonne de la moitier gauche du tableau
+		for(column = 0; column < 6; column++){
+			
+			// Ajout d'espace pour la partie basse du losange
+			for (space = 0; space <= column; space++) 
 			{
 				System.out.print("  ");
 			}
 
-			for (column = 1 + ligne , diag = 1; diag < 7 - ligne; column++, diag++){
-				switch(column){
-					case 0: lettreligne = 'A';break;
-					case 1: lettreligne = 'B';break;
-					case 2: lettreligne = 'C';break;
-					case 3: lettreligne = 'D';break;
-					case 4: lettreligne = 'E';break;
-					case 5: lettreligne = 'F';break;
-					case 6: lettreligne = 'G';break;
+			// Parcours des diagonale du milieu vers le bas à gauche du tableau
+			for (line = 1 + column , diag = 1; diag < state.length - column; line++, diag++){
+				
+				switch(line){
+					case 0: lettreline = 'A';break;
+					case 1: lettreline = 'B';break;
+					case 2: lettreline = 'C';break;
+					case 3: lettreline = 'D';break;
+					case 4: lettreline = 'E';break;
+					case 5: lettreline = 'F';break;
+					case 6: lettreline = 'G';break;
 				}
-				switch(state[column][diag]){
-					case '.': System.out.print(BLACK_BACKGROUND + WHITE_BACKGROUND + lettreligne + Integer.toString(diag)+ RESET);break;
-					case 'R': System.out.print(RED_BACKGROUND + lettreligne + Integer.toString(diag)+RESET);break;
-					case 'B': System.out.print(BLUE_BACKGROUND + lettreligne + Integer.toString(diag)+ RESET);break;
+				switch(state[line][diag]){
+					case '.': System.out.print(BLACK_BACKGROUND + WHITE_BACKGROUND + lettreline + Integer.toString(diag)+ RESET);break;
+					case 'R': System.out.print(RED_BACKGROUND + lettreline + Integer.toString(diag)+RESET);break;
+					case 'B': System.out.print(BLUE_BACKGROUND + lettreline + Integer.toString(diag)+ RESET);break;
 					case '-': System.out.print("  ");
 				}
 				System.out.print("  ");
@@ -181,6 +208,7 @@ public class StuckWin {
 			System.out.println();
 		}
 	}
+
 	/**
 	 * Joue un tour
 	 * 
