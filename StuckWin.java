@@ -13,7 +13,7 @@ public class StuckWin {
 	private static final double BOARD_SIZE = 7;
 
 	enum Result {
-		OK
+		OKe
 		, BAD_COLOR
 		, DEST_NOT_FREE
 		, EMPTY_SRC
