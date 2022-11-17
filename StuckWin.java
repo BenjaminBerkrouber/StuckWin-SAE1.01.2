@@ -12,6 +12,8 @@ public class StuckWin {
 
 	private static final double BOARD_SIZE = 7;
 
+	public static final char[] LIST = {'A','B','C','D','E','F','G'};
+
 	enum Result {
 		OK
 		, BAD_COLOR
@@ -55,52 +57,85 @@ public class StuckWin {
 	Result deplace(char couleur, String lcSource, String lcDest, ModeMvt mode) {
 		Result result = Result.OK;
 
-		// Récupération currentCase exemple : (A2)
-		char ligneSource = lcSource.charAt(0);
-		char columnSource = lcSource.charAt(1);
-		char ligneDest = lcDest.charAt(0);
-		char columnDest = lcDest.charAt(1);
-		char currentCase = state[ligneSource][columnSource];
+		// mode = ModeMvt.SIMU;
+		// mode = ModeMvt.REAL;
 
-		switch(ligneSource){
-			case 'A': ligneSource = 0;break;
-			case 'B': ligneSource = 1;break;
-			case 'C': ligneSource = 2;break;
-			case 'D': ligneSource = 3;break;
-			case 'E': ligneSource = 4;break;
-			case 'F': ligneSource = 5;break;
-			case 'G': ligneSource = 6;break;
+		// Récupération currentCase exemple : (E3)
+		char lineSource = lcSource.charAt(0);
+		char columnSource = lcSource.charAt(1);
+
+		// Récupération FutureCase exemple : (D4)
+		char lineDest = lcDest.charAt(0);
+		char columnDest = lcDest.charAt(1);
+
+		// Stockage valeur current&future Case
+		char currentCase = state[lineSource][columnSource];
+		char futureCase = state[lineDest][columnDest];
+
+		System.out.print(" test ");
+		System.out.print(currentCase);
+		System.out.print(futureCase);
+
+
+		switch(lineSource){
+			case 'A': lineSource = 0;break;
+			case 'B': lineSource = 1;break;
+			case 'C': lineSource = 2;break;
+			case 'D': lineSource = 3;break;
+			case 'E': lineSource = 4;break;
+			case 'F': lineSource = 5;break;
+			case 'G': lineSource = 6;break;
+			default:
 		}
 		switch(columnSource){
-			case '1': columnSource = 0;break;
-			case '2': columnSource = 1;break;
-			case '3': columnSource = 2;break;
-			case '4': columnSource = 3;break;
-			case '5': columnSource = 4;break;
-			case '6': columnSource = 5;break;
-			case '7': columnSource = 6;break;
+			case '0': columnSource = 0;break;
+			case '1': columnSource = 1;break;
+			case '2': columnSource = 2;break;
+			case '3': columnSource = 3;break;
+			case '4': columnSource = 4;break;
+			case '5': columnSource = 5;break;
+			case '6': columnSource = 6;break;
+			case '7': columnSource = 7;break;
+			default:
 		}
 
-		possibleDests(couleur, ligneSource, columnSource);		
+		switch(lineDest){
+			case 'A': lineDest = 0;break;
+			case 'B': lineDest = 1;break;
+			case 'C': lineDest = 2;break;
+			case 'D': lineDest = 3;break;
+			case 'E': lineDest = 4;break;
+			case 'F': lineDest = 5;break;
+			case 'G': lineDest = 6;break;
+			default:
+		}
+		switch(columnDest){
+			case '0': columnDest = 0;break;
+			case '1': columnDest = 1;break;
+			case '2': columnDest = 2;break;
+			case '3': columnDest = 3;break;
+			case '4': columnDest = 4;break;
+			case '5': columnDest = 5;break;
+			case '6': columnDest = 6;break;
+			case '7': columnDest = 7;break;
+			default:
+		}
 
-		switch(couleur)
+		String[] Destination_possible = possibleDests(couleur, lineSource, columnSource);		
+
+		if(couleur == 'R')
 		{
-			case 'R': 
-				
-				break;
-			case 'B':
-				
-				break;
-			default: 
-				result = Result.EMPTY_SRC;
+			for(int i=0 ; i<3 ; i++)
+			{
+				if(Destination_possible[i].equals(lcDest) && mode ==  ModeMvt.REAL)
+				{
+					System.out.println("Success");
+					state[lineDest][columnDest];
+				}
+			}
 		}
 
-		switch(currentCase){
-			case 'R' : ; break;
-			default: ;
-		}
-
-		return result;
+		return Result.OK;
 	}
 
 	/**
@@ -115,17 +150,52 @@ public class StuckWin {
 	 */
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 
+		// throw new java.lang.UnsupportedOperationException("à compléter possible déplacement");
+
 		String[] tab = new String[3];
-		char currentCase = state[idLettre][idCol];
 
-		// for(int i = 0; i<state.length;i++)
-		// {
-		// 	for(int j = i; j<state[i].length;j++)
-		// 	{
-		// 		if()
-		// 	}
-		// }
 
+		if(couleur == 'R')
+		{
+			tab[0]= Integer.toString(idLettre) + Integer.toString(idCol -1);
+			tab[1]= Integer.toString(idLettre +1) + Integer.toString(idCol -1);
+			tab[2]= Integer.toString(idLettre +1) + Integer.toString(idCol);
+		}
+		else
+		{
+			tab[0]= Integer.toString(idLettre -1) + Integer.toString(idCol -1);
+			tab[1]= Integer.toString(idLettre -1) + Integer.toString(idCol +1);
+			tab[2]= Integer.toString(idLettre ) + Integer.toString(idCol +1);
+		}
+
+		String dest, ldest = "", cdest="";
+
+		for(int i =0;i<3;i++)
+		{
+			switch(tab[i].charAt(0)){
+				case '0': ldest = "A";break;
+				case '1': ldest = "A";break;
+				case '2': ldest = "B";break;
+				case '3': ldest = "C";break;
+				case '4': ldest = "D";break;
+				case '5': ldest = "E";break;
+				case '6': ldest = "F";break;
+				case '7': ldest = "G";break;
+				default:;
+			}
+			switch(tab[i].charAt(1)){
+				case '0': cdest = "0";break;
+				case '1': cdest = "1";break;
+				case '2': cdest = "2";break;
+				case '3': cdest = "3";break;
+				case '4': cdest = "4";break;
+				case '5': cdest = "5";break;
+				case '6': cdest = "6";break;
+				case '7': cdest = "7";break;
+			}
+		dest = ldest+cdest;
+		tab[i]=dest;
+		}
 		return tab;
 	}
 
@@ -142,7 +212,7 @@ public class StuckWin {
 		for(column = 0; column < state.length; column++){
 
 			// Ajout d'espace pour la partie haute du losange
-			for (space = state.length -2; space >= column; space--) {
+			for (space = state.length -1; space >= column; space--) {
 				System.out.print("  ");
 			}
 			
@@ -150,15 +220,7 @@ public class StuckWin {
 			for (line = 0, diag = 7 - column; line < 1 + column; line++, diag++){
 				
 				// Nomination des lignes en lettre de A->G pour 0->7 (nombre de ligne dans le tableau)
-				switch(line){
-					case 0: lettreline = 'A';break;
-					case 1: lettreline = 'B';break;
-					case 2: lettreline = 'C';break;
-					case 3: lettreline = 'D';break;
-					case 4: lettreline = 'E';break;
-					case 5: lettreline = 'F';break;
-					case 6: lettreline = 'G';break;
-				}
+				lettreline = LIST[line];
 
 				/**  Numeration des colonnes de 0->7 pour 0->7 (nombre colonne dans le tableau) 
 				* + Affichage des case (Fond-couleur + Nomination ligne + numeration colon + Reset style)
@@ -180,23 +242,14 @@ public class StuckWin {
 		for(column = 0; column < 6; column++){
 			
 			// Ajout d'espace pour la partie basse du losange
-			for (space = 0; space <= column; space++) 
-			{
+			for (space = 0; space-1 <= column; space++){
 				System.out.print("  ");
 			}
-
 			// Parcours des diagonale du milieu vers le bas à gauche du tableau
 			for (line = 1 + column , diag = 1; diag < state.length - column; line++, diag++){
 				
-				switch(line){
-					case 0: lettreline = 'A';break;
-					case 1: lettreline = 'B';break;
-					case 2: lettreline = 'C';break;
-					case 3: lettreline = 'D';break;
-					case 4: lettreline = 'E';break;
-					case 5: lettreline = 'F';break;
-					case 6: lettreline = 'G';break;
-				}
+				lettreline = LIST[line];
+
 				switch(state[line][diag]){
 					case '.': System.out.print(BLACK_BACKGROUND + WHITE_BACKGROUND + lettreline + Integer.toString(diag)+ RESET);break;
 					case 'R': System.out.print(RED_BACKGROUND + lettreline + Integer.toString(diag)+RESET);break;
