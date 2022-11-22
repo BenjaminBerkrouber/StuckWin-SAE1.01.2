@@ -15,7 +15,6 @@ public class StuckWin {
 	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'};
 	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'};
 
-
 	enum Result {
 		OK
 		, BAD_COLOR
@@ -58,109 +57,131 @@ public class StuckWin {
 	 */
 	Result deplace(char couleur, String lcSource, String lcDest, ModeMvt mode) {
 
-		// Récupération currentCase & DestCase exemple : lineSource = E columnSource = 3)
-		char lineSource = lcSource.charAt(0);
-		char columnSource = lcSource.charAt(1);
-		char lineDest = lcDest.charAt(0);
-		char columnDest = lcDest.charAt(1);
-
-		// Stock la valeur de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
-		char currentCase;
-		char DestCase;
-		
-		char currentColor = couleur;
+		Result result = Result.OK;
 
 		// Tableau qui stock les case possiblement jouable
 		String[] possibleDests = new String[3];
 
-		for(int i = 0; i< state.length;i++)
+		// Stock la valeur de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
+		char currentCase;
+		char destCase;
+
+		int xSource=0;
+		int ySource=0;
+		int xDest=0;
+		int yDest=0;
+
+		// Vérification que le joueur entre 2 caractère et qu'il corresponde au élement des tableau
+		if(lcSource.length() != 2 || lcDest.length() != 2)
 		{
-			
+			result = Result.EMPTY_SRC;return result;
 		}
 
-		switch(lineSource){
-			case 'A': lineSource = 0;break;
-			case 'B': lineSource = 1;break;
-			case 'C': lineSource = 2;break;
-			case 'D': lineSource = 3;break;
-			case 'E': lineSource = 4;break;
-			case 'F': lineSource = 5;break;
-			case 'G': lineSource = 6;break;
-			default:
-		}
-		switch(columnSource){
-			case '0': columnSource = 0;break;
-			case '1': columnSource = 1;break;
-			case '2': columnSource = 2;break;
-			case '3': columnSource = 3;break;
-			case '4': columnSource = 4;break;
-			case '5': columnSource = 5;break;
-			case '6': columnSource = 6;break;
-			case '7': columnSource = 7;break;
-			default:
+		if(!(issetlc(lcSource)) || !(issetlc(lcDest)))
+		{
+			result = Result.EMPTY_SRC;return result;
 		}
 
-		switch(lineDest){
-			case 'A': lineDest = 0;break;
-			case 'B': lineDest = 1;break;
-			case 'C': lineDest = 2;break;
-			case 'D': lineDest = 3;break;
-			case 'E': lineDest = 4;break;
-			case 'F': lineDest = 5;break;
-			case 'G': lineDest = 6;break;
-			default:
-		}
-		switch(columnDest){
-			case '0': columnDest = 0;break;
-			case '1': columnDest = 1;break;
-			case '2': columnDest = 2;break;
-			case '3': columnDest = 3;break;
-			case '4': columnDest = 4;break;
-			case '5': columnDest = 5;break;
-			case '6': columnDest = 6;break;
-			case '7': columnDest = 7;break;
-			default:
+		// Initialisation de x-y Source et Dest  
+
+		for(int i =0; i < LISTLETTER.length; i++)
+		{
+			if(LISTLETTER[i] == lcSource.charAt(0))
+			{
+				xSource = i;
+			}
+
+			if(LISTLETTER[i] == lcDest.charAt(0))
+			{
+				xDest = i;
+			}
 		}
 
-		currentCase = state[lineSource][columnSource];
-		DestCase = state[lineDest][columnDest];
-		possibleDests = possibleDests(couleur, lineSource, columnSource);		
+		for(int i =0; i < LISTNUMBER.length; i++)
+		{
+			if(LISTNUMBER[i] == lcSource.charAt(1))
+			{
+				ySource = i;
+			}
 
-
-		// Verification qu'il existe un pion
-		if(!issetSrcPion(currentCase)){
-			return Result.EMPTY_SRC;
+			if(LISTNUMBER[i] == lcDest.charAt(1))
+			{
+				yDest = i;
+			}
 		}
 
+		// Initialisation de currentCase & destCase
+
+		currentCase = state[xSource][ySource];
+		destCase = state[xDest][yDest];
+
+		// Vérifie qu'il existe un pion dans la case
+		if(emptylc(currentCase)){
+			result = Result.EMPTY_SRC; return result;
+		}
+		
 		// Vérification couleur du pion à déplace = couleur du joueur
 		if(currentCase != couleur){
-			return Result.BAD_COLOR;
+			result = Result.BAD_COLOR; return result;
 		}
 
 		// Vérifie que la case d'arriver est dans les bordure
-		if(DestCase == '-')
+		if(destCase == '-')
 		{
-			return Result.EXT_BOARD;
+			result = Result.EXT_BOARD;return result;
 		}
 
 		// Vérifie que la case d'arriver n'est pas occuper
-		if(DestCase != VIDE)
+		if(destCase != VIDE)
 		{
-			return Result.DEST_NOT_FREE;
+			result = Result.DEST_NOT_FREE; return result;
 		}
 
 		// Verifie la distance entre la case de départ et la case d'arrivé
+		possibleDests = possibleDests(couleur, xSource, ySource);
+
 		if(!valideDistanceSrcToDest(possibleDests, lcDest))
 		{
-			return Result.TOO_FAR;
+			result = Result.TOO_FAR;return result;
 		}
 
 		// Déplacement du pion
-		System.out.println("Success");
-		state[lineDest][columnDest] = state[lineSource][columnSource];
-		state[lineSource][columnSource] = '.';
+		System.out.print("Success");
+		state[xDest][yDest] = state[xSource][ySource];
+		state[xSource][ySource] = VIDE;
+		
+		result = Result.OK; return result;
+	}
+	
 
-		return Result.OK;
+
+		/**
+	 * Verifie si la case que on souhaite jouer existe dans le tableau
+	 * @param lcSource La case du tableau que on jeu jouer
+	 * @return true si il existe un pion sinon false.
+	 */
+	public boolean issetlc(String lcSource){
+		boolean issetLC = false;
+		boolean issetL = false;
+		boolean issetC = false;
+
+		for(int i=0; i<LISTNUMBER.length;i++){
+			if(LISTNUMBER[i] == lcSource.charAt(1)){
+				issetC = true;
+			}
+		}
+
+		for(int i=0; i <LISTLETTER.length; i++){
+			if(LISTLETTER[i] == lcSource.charAt(0)){
+				issetL = true;
+			}
+		}
+
+		if(issetC && issetL){
+			issetLC= true;
+		}
+
+		return issetLC;
 	}
 
 	/**
@@ -169,17 +190,14 @@ public class StuckWin {
 	 * @param currentCase La case du tableau que on jeu jouer
 	 * @return true si il existe un pion sinon false.
 	 */
-	public boolean issetSrcPion(char currentCase){
-		boolean issetPion = false;
-		for(int i=0; i < joueurs.length; i++)
-		{
-			if(currentCase == joueurs[i])
-			{
-				issetPion = true;
+	public boolean emptylc(char currentCase){
+		boolean emptylc = true;
+		for(int i=0; i < joueurs.length; i++){
+			if(currentCase == joueurs[i]){
+				emptylc = false;
 			}
 		}
-
-		return issetPion;
+		return emptylc;
 	}
 
 		/**
@@ -191,7 +209,8 @@ public class StuckWin {
 	 */
 	public boolean valideDistanceSrcToDest(String[] possibleDests, String lcDest){
 		boolean valideDistanceSrcToDest = false;
-		for(int i = 0; i <= possibleDests.length ; i++){ 
+		
+		for(int i = 0; i < possibleDests.length ; i++){ 
 			if(!(possibleDests[i].equals(lcDest))){
 				valideDistanceSrcToDest = true;
 			}
@@ -210,63 +229,41 @@ public class StuckWin {
 	 *         sur les bords)
 	 */
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
-
-		// throw new java.lang.UnsupportedOperationException("à compléter possible déplacement");
-
 		String[] possibleDests = new String[3];
 
-		if(couleur == 'R')
-		{
-			possibleDests[0]= Integer.toString(idLettre) + Integer.toString(idCol -1);
-			possibleDests[1]= Integer.toString(idLettre +1) + Integer.toString(idCol -1);
-			possibleDests[2]= Integer.toString(idLettre +1) + Integer.toString(idCol);
-		}
-		else
-		{
-			possibleDests[0]= Integer.toString(idLettre -1) + Integer.toString(idCol -1);
-			possibleDests[1]= Integer.toString(idLettre -1) + Integer.toString(idCol +1);
-			possibleDests[2]= Integer.toString(idLettre ) + Integer.toString(idCol +1);
-		}
-
-		String dest, lineDest, columndest="";
-
-		lineDest = LIST[0]+LIST[1];
-		
-		for(int i =0;i<3;i++)
-		{
-			switch(possibleDests[i].charAt(0)){
-				case '0': lineDest = "A";break;
-				case '1': ldest = "A";break;
-				case '2': ldest = "B";break;
-				case '3': ldest = "C";break;
-				case '4': ldest = "D";break;
-				case '5': ldest = "E";break;
-				case '6': ldest = "F";break;
-				case '7': ldest = "G";break;
-				default:;
+		for(int i =0; i < LISTLETTER.length; i++){
+			for(int j=0; j< LISTNUMBER.length; j++){
+				if(couleur == 'R'){
+					if(i == idLettre && j == idCol-1){
+						possibleDests[0] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}
+					else if(i == idLettre+1 && j == idCol){
+						possibleDests[1] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}				
+					else if(i == idLettre+1 && j == idCol+1){
+						possibleDests[2] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}
+				}
+				else{
+					if(i == idLettre-1 && j == idCol){
+						possibleDests[0] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}
+					else if(i == idLettre-1 && j == idCol+1){
+						possibleDests[1] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}				
+					else if(i == idLettre && j == idCol+1){
+						possibleDests[2] = ""+LISTLETTER[i]+LISTNUMBER[j];
+					}
+				}			
 			}
-			switch(possibleDests[i].charAt(1)){
-				case '0': cdest = "0";break;
-				case '1': cdest = "1";break;
-				case '2': cdest = "2";break;
-				case '3': cdest = "3";break;
-				case '4': cdest = "4";break;
-				case '5': cdest = "5";break;
-				case '6': cdest = "6";break;
-				case '7': cdest = "7";break;
-			}
-		dest = linedest+columndest;
-		possibleDests[i]=dest;
 		}
-
 		return possibleDests;
 	}
 
-	/**
-	 * Affiche le plateau de jeu dans la configuration portée par
-	 * l'attribut d'état "state"
-	 */
+
 	void affiche() {
+
+		// graphiqueAffiche();
 		// Déclaration des variable pour parcourire le tableau
 		int column, line, diag, space;
         char letterCase,numberCase;
@@ -280,7 +277,7 @@ public class StuckWin {
 			}
 			
 			// Parcours des diagonale du haut à droite vers le centre
-			for (line = 0, diag = 7 - column; line < 1 + column; line++, diag++){
+			for (line = 0, diag = state.length - column; line < 1 + column; line++, diag++){
 				
 				// Nomination & Numeration des cases 
 				letterCase = LISTLETTER[line];
@@ -288,9 +285,10 @@ public class StuckWin {
 
 				/**  Numeration des colonnes de 0->7 pour 0->7 (nombre colonne dans le tableau) 
 				* + Affichage des case (Fond-couleur + Nomination ligne + numeration colon + Reset style)
+				* VERIFIER AFFICHAGE AVEC joueurs[0] pour B
 				*/
 				switch(state[line][diag]){
-					case '.': System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
+					case VIDE: System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
 					case 'R': System.out.print(RED_BACKGROUND + letterCase + numberCase+ RESET);;break;
 					case 'B': System.out.print(BLUE_BACKGROUND + letterCase + numberCase + RESET);break;
 					case '-': System.out.print("  ");
@@ -303,7 +301,7 @@ public class StuckWin {
 		}		
 
 		// Parcours des colonne de la moitier gauche du tableau
-		for(column = 0; column < 6; column++){
+		for(column = 0; column < state.length -1; column++){
 			
 			// Ajout d'espace pour la partie basse du losange
 			for (space = 0; space-1 <= column; space++){
@@ -316,7 +314,7 @@ public class StuckWin {
 				numberCase = LISTNUMBER[diag];
 
 				switch(state[line][diag]){
-					case '.': System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
+					case VIDE: System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
 					case 'R': System.out.print(RED_BACKGROUND + letterCase + numberCase+ RESET);;break;
 					case 'B': System.out.print(BLUE_BACKGROUND + letterCase + numberCase + RESET);break;
 					case '-': System.out.print("  ");
@@ -335,8 +333,21 @@ public class StuckWin {
 	 *         jouer.
 	 */
 	String[] jouerIA(char couleur) {
-		// votre code ici. Supprimer la ligne ci-dessous.
-		throw new java.lang.UnsupportedOperationException("à compléter joueur IA");
+		// votre code ici. Supprimer la ligne ci-dessous.s		
+		String src = "";
+		String dst = "";
+		String[] mvtIa;
+
+		for(int i=0; i < state.length;i++){
+			for(int j=0; j < state[i].length;j++){
+				if(state[i][j]=='R'){
+					src = ""+LISTLETTER[i]+LISTNUMBER[j];
+					dst = ""+LISTLETTER[i+1]+LISTNUMBER[j-1];
+				}
+			}
+		}
+
+		return new String[] { src, dst };
 	}
 
 	/**
@@ -375,7 +386,7 @@ public class StuckWin {
 	 */
 	char finPartie(char couleur) {
 		// votre code ici. Supprimer la ligne ci-dessous.
-		throw new java.lang.UnsupportedOperationException("à compléter la fin de la partie");
+		return 'N';
 	}
 
 	public static void main(String[] args) {
