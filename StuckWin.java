@@ -140,15 +140,25 @@ public class StuckWin {
 		// Verifie la distance entre la case de départ et la case d'arrivé
 		possibleDests = possibleDests(couleur, xSource, ySource);
 
-		if(!valideDistanceSrcToDest(possibleDests, lcDest))
+		// if(!issetPossibleDests(possibleDests, lcDest))
+		// {
+		// 	result = Result.TOO_FAR;return result;
+		// }
+
+		if(!(possibleDests[0].equals(lcDest) 
+		|| possibleDests[1].equals(lcDest) 
+		|| possibleDests[2].equals(lcDest)))
 		{
 			result = Result.TOO_FAR;return result;
 		}
 
 		// Déplacement du pion
-		System.out.print("Success");
-		state[xDest][yDest] = state[xSource][ySource];
-		state[xSource][ySource] = VIDE;
+		if(mode == ModeMvt.REAL)
+		{
+			System.out.print("Success");
+			state[xDest][yDest] = state[xSource][ySource];
+			state[xSource][ySource] = VIDE;
+		}
 		
 		result = Result.OK; return result;
 	}
@@ -207,15 +217,15 @@ public class StuckWin {
 	 * @param lcDest id de la case de déplacement souhaité
 	 * @return true si la distance et valide sinon false.
 	 */
-	public boolean valideDistanceSrcToDest(String[] possibleDests, String lcDest){
-		boolean valideDistanceSrcToDest = false;
-		
-		for(int i = 0; i < possibleDests.length ; i++){ 
-			if(!(possibleDests[i].equals(lcDest))){
-				valideDistanceSrcToDest = true;
+	public boolean issetPossibleDests(String[] possibleDests, String lcDest){
+		boolean issetPossibleDests = false;
+
+		for(int i = 0; i < 3 ; i++){ 
+			if(possibleDests[i].equals(lcDest)){
+				issetPossibleDests = true;
 			}
 		}
-		return valideDistanceSrcToDest;
+		return issetPossibleDests;
 	}
 
 	/**
@@ -237,10 +247,10 @@ public class StuckWin {
 					if(i == idLettre && j == idCol-1){
 						possibleDests[0] = ""+LISTLETTER[i]+LISTNUMBER[j];
 					}
-					else if(i == idLettre+1 && j == idCol){
+					else if(i == idLettre+1 && j == idCol-1){
 						possibleDests[1] = ""+LISTLETTER[i]+LISTNUMBER[j];
 					}				
-					else if(i == idLettre+1 && j == idCol+1){
+					else if(i == idLettre+1 && j == idCol){
 						possibleDests[2] = ""+LISTLETTER[i]+LISTNUMBER[j];
 					}
 				}
@@ -335,19 +345,28 @@ public class StuckWin {
 	String[] jouerIA(char couleur) {
 		// votre code ici. Supprimer la ligne ci-dessous.s		
 		String src = "";
-		String dst = "";
-		String[] mvtIa;
+		String[] a = new String[2];
+
 
 		for(int i=0; i < state.length;i++){
 			for(int j=0; j < state[i].length;j++){
-				if(state[i][j]=='R'){
+				if(state[i][j]== couleur){
+					
 					src = ""+LISTLETTER[i]+LISTNUMBER[j];
-					dst = ""+LISTLETTER[i+1]+LISTNUMBER[j-1];
+					String[] dest = possibleDests(couleur, i, j);
+					for(int k=0; k<3;k++)
+					{
+						if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK)
+						{
+							a[0]=src;
+							a[1]=dest[k];
+							return a;
+						}
+					}
 				}
 			}
 		}
-
-		return new String[] { src, dst };
+		return a;
 	}
 
 	/**
