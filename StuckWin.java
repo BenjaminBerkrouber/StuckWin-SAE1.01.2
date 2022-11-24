@@ -1,3 +1,4 @@
+import java.net.IDN;
 import java.util.*;
 
 public class StuckWin {
@@ -83,7 +84,6 @@ public class StuckWin {
 		}
 
 		// Initialisation de x-y Source et Dest  
-
 		for(int i =0; i < LISTLETTER.length; i++)
 		{
 			if(LISTLETTER[i] == lcSource.charAt(0))
@@ -140,11 +140,6 @@ public class StuckWin {
 		// Verifie la distance entre la case de départ et la case d'arrivé
 		possibleDests = possibleDests(couleur, xSource, ySource);
 
-		// if(!issetPossibleDests(possibleDests, lcDest))
-		// {
-		// 	result = Result.TOO_FAR;return result;
-		// }
-
 		if(!(possibleDests[0].equals(lcDest) 
 		|| possibleDests[1].equals(lcDest) 
 		|| possibleDests[2].equals(lcDest)))
@@ -155,7 +150,6 @@ public class StuckWin {
 		// Déplacement du pion
 		if(mode == ModeMvt.REAL)
 		{
-			System.out.print("Success");
 			state[xDest][yDest] = state[xSource][ySource];
 			state[xSource][ySource] = VIDE;
 		}
@@ -163,7 +157,6 @@ public class StuckWin {
 		result = Result.OK; return result;
 	}
 	
-
 
 		/**
 	 * Verifie si la case que on souhaite jouer existe dans le tableau
@@ -210,24 +203,6 @@ public class StuckWin {
 		return emptylc;
 	}
 
-		/**
-	 * Verifie si la distance entre currentCase et DestCase et valide
-	 * à partir de la position de départ lcDest.
-	 * @param possibleDests tableau des trois positions jouables par le pion
-	 * @param lcDest id de la case de déplacement souhaité
-	 * @return true si la distance et valide sinon false.
-	 */
-	public boolean issetPossibleDests(String[] possibleDests, String lcDest){
-		boolean issetPossibleDests = false;
-
-		for(int i = 0; i < 3 ; i++){ 
-			if(possibleDests[i].equals(lcDest)){
-				issetPossibleDests = true;
-			}
-		}
-		return issetPossibleDests;
-	}
-
 	/**
 	 * Construit les trois chaînes représentant les positions accessibles
 	 * à partir de la position de départ [idLettre][idCol].
@@ -240,33 +215,37 @@ public class StuckWin {
 	 */
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 		String[] possibleDests = new String[3];
+			if(couleur == joueurs[1]){
+				if(idLettre <= LISTLETTER.length && idLettre >= 0 && idCol-1 <= LISTNUMBER.length && idCol-1 >= 0){
+					possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
+				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-		for(int i =0; i < LISTLETTER.length; i++){
-			for(int j=0; j< LISTNUMBER.length; j++){
-				if(couleur == 'R'){
-					if(i == idLettre && j == idCol-1){
-						possibleDests[0] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}
-					else if(i == idLettre+1 && j == idCol-1){
-						possibleDests[1] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}				
-					else if(i == idLettre+1 && j == idCol){
-						possibleDests[2] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}
-				}
-				else{
-					if(i == idLettre-1 && j == idCol){
-						possibleDests[0] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}
-					else if(i == idLettre-1 && j == idCol+1){
-						possibleDests[1] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}				
-					else if(i == idLettre && j == idCol+1){
-						possibleDests[2] = ""+LISTLETTER[i]+LISTNUMBER[j];
-					}
-				}			
+				if(idLettre+1 <= LISTLETTER.length && idLettre+1 >= 0 && idCol-1 <= LISTNUMBER.length && idCol-1 >= 0){
+					possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
+				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+								
+				if(idLettre+1 <= LISTLETTER.length && idLettre+1 >= 0 && idCol <= LISTNUMBER.length && idCol>= 0){
+					possibleDests[2] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol];
+				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+				
 			}
-		}
+			else
+			{
+				if(idLettre-1 <= LISTLETTER.length && idLettre-1 >= 0 && idCol <= LISTNUMBER.length && idCol >= 0){
+					possibleDests[0] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol];
+				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+
+
+				if(idLettre-1 <= LISTLETTER.length && idLettre-1 >= 0 && idCol+1 <= LISTNUMBER.length && idCol+1 >= 0){
+					possibleDests[1] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol+1];
+				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+
+				if(idLettre <= LISTLETTER.length && idLettre >= 0 && idCol+1 <= LISTNUMBER.length && idCol+1 >= 0){
+					possibleDests[2] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol+1];
+				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+
+			}
+
 		return possibleDests;
 	}
 
@@ -404,8 +383,31 @@ public class StuckWin {
 	 * @return
 	 */
 	char finPartie(char couleur) {
-		// votre code ici. Supprimer la ligne ci-dessous.
-		return 'N';
+		
+		for(int i=0; i<state.length;i++)
+		{
+			for(int j=0;j<state[i].length;j++)
+			{
+				if(state[i][j] == couleur)
+				{
+					String src = ""+LISTLETTER[i]+LISTNUMBER[j];
+					String[] possibleDests = possibleDests(couleur, i, j);
+					for(int k=0; k < possibleDests.length;k++)
+					{
+						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK)
+						{
+							return 'N';
+						}
+						else
+						{
+							return couleur;
+						}
+					}
+				}
+			}
+		}
+
+		return couleur;
 	}
 
 	public static void main(String[] args) {
