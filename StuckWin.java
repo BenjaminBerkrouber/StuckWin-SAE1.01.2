@@ -249,9 +249,59 @@ public class StuckWin {
 		return possibleDests;
 	}
 
+	// void graphiqueAffiche(){
+
+	// 	StdDraw.setXscale(-1.2, 1.2);
+    //     StdDraw.setYscale(-1.2, 1.2);
+
+    //     StdDraw.setPenRadius(0.001);
+    //     StdDraw.setPenColor(StdDraw.BLUE);
+	// 	StdDraw.enableDoubleBuffering();
+
+
+	// 	// StdDraw.circle(0, 1, 0.1);
+	// 	// StdDraw.circle(0, 1, 0.1);
+	// 	int x= 0;
+	// 	int y= 1;
+
+	// 	for(int i=0;i<state.length;i++)
+	// 	{
+	// 		for (int j = 0, diag = state.length - i; j < 1 + i; j++, diag++){
+	// 			StdDraw.circle(x, y, 0.1);
+	// 			System.out.println(j+" - "+diag);
+	// 		}
+	// 		x -= 0.1;
+	// 		y -= 0.1;
+	// 		System.out.println("");
+	// 	}
+
+	// 	// double[] tPointsX = new double[6];
+    //     // double[] tPointsY = new double[6];
+
+	// 	// setPoints(tPointsX, tPointsY);
+
+	// 	// StdDraw.polygon(tPointsX, tPointsY);
+
+    //     StdDraw.show();
+		
+	// }
+
+	/**
+     * Calcule les coordonnées de points répartis sur le cercle trigo
+     * et les range dans 2 tableaux 1D
+     * @param tX tableau des abscisses
+     * @param tY tableau des ordonnées
+     */
+    public static void setPoints(double[] tX, double[] tY) {
+        int n = tX.length;
+        final double ANGLE_STEP = 2 * Math.PI / n;
+        for (int i = 0; i < n; i++) {
+            tX[i] = Math.cos(i * ANGLE_STEP);
+            tY[i] = Math.sin(i * ANGLE_STEP);
+        }
+    }
 
 	void affiche() {
-
 		// graphiqueAffiche();
 		// Déclaration des variable pour parcourire le tableau
 		int column, line, diag, space;
@@ -322,24 +372,104 @@ public class StuckWin {
 	 *         jouer.
 	 */
 	String[] jouerIA(char couleur) {
-		// votre code ici. Supprimer la ligne ci-dessous.s		
-		String src = "";
+
+		// String src = "";
+		// String[] a = new String[2];
+		// for(int i=0; i < state.length;i++){
+		// 	for(int j=0; j < state[i].length;j++){
+		// 		if(state[i][j]== couleur){
+		// 			src = ""+LISTLETTER[i]+LISTNUMBER[j];
+		// 			String[] dest = possibleDests(couleur, i, j);
+		// 			for(int k=0; k<dest.lenght;k++){
+		// 				if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK){
+		// 					a[0]=src;
+		// 					a[1]=dest[k];
+		// 					return a;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// return a;
+
+		int MaxSc=0;
+		int Sc=0;
+
+		int x1=0,y1=0;
+		int x2=0,y2=0;
+		int x3=0,y3=0;
+
 		String[] a = new String[2];
 
 
-		for(int i=0; i < state.length;i++){
-			for(int j=0; j < state[i].length;j++){
-				if(state[i][j]== couleur){
-					
-					src = ""+LISTLETTER[i]+LISTNUMBER[j];
-					String[] dest = possibleDests(couleur, i, j);
-					for(int k=0; k<3;k++)
-					{
-						if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK)
-						{
-							a[0]=src;
-							a[1]=dest[k];
-							return a;
+		// Trouver case L0
+		for(int x0=0; x0 < state.length;x0++){
+			for(int y0=0; y0 < state[y0].length;y0++){
+				
+				if(state[x0][y0]== couleur){
+
+					String srcL0 = ""+LISTLETTER[x0]+LISTNUMBER[y0];
+					// Trouver case L1
+					String[] destL1 = possibleDests(couleur, x0, y0);
+
+					for(int possL1=0; possL1<destL1.length;possL1++){
+						if(deplace(couleur, srcL0, destL1[possL1], ModeMvt.SIMU) == Result.OK){
+							
+							for(int letter=0;letter<=LISTLETTER[letter];letter++){
+								if(letter == LISTLETTER[letter]){x1=letter;}
+							}
+							for(int number=0;number<=LISTNUMBER[number];number++){
+								if(number == LISTLETTER[number]){y1=number;}
+							}
+
+							switch(state[x1][y1]){
+								case 'R': Sc -=10; break;
+								case 'B': Sc -=10; break;
+								case '.': Sc +=1; break;
+							}
+							String srcL1 = ""+LISTLETTER[x1]+LISTNUMBER[y1];
+							// Trouver case L2
+							String[] destL2 = possibleDests(couleur,x1, y1);
+
+							for(int possL2=0; possL2<destL2.length;possL2++){
+								if(deplace(couleur, srcL1, destL2[possL2], ModeMvt.SIMU) == Result.OK){
+
+									for(int letter=0;letter<LISTLETTER[letter];letter++){
+										if(letter == LISTLETTER[letter]){x2=letter;}
+									}
+									for(int number=0;number<LISTNUMBER[number];number++){
+										if(number == LISTLETTER[number]){y2=number;}
+									}
+									
+									switch(state[x2][y2]){
+										case 'R': Sc +=3; break;
+										case 'B': Sc +=2; break;
+										case '.': Sc +=1; break;
+									}
+									
+									String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
+									// Trouver case L3
+									String[] destL3 = possibleDests(couleur,x2, y2);
+
+									for(int possL3=0; possL3<destL3.length;possL3++){
+										if(deplace(couleur, srcL2, destL3[possL3], ModeMvt.SIMU) == Result.OK){
+											
+											for(int letter=0;letter<LISTLETTER[letter];letter++){
+												if(letter == LISTLETTER[letter]){x2=letter;}
+											}
+											for(int number=0;number<LISTNUMBER[number];number++){
+												if(number == LISTLETTER[number]){y2=number;}
+											}
+											
+											switch(state[x3][y3]){
+												case 'R': Sc +=3; break;
+												case 'B': Sc +=2; break;
+												case '.': Sc +=1; break;
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -347,6 +477,7 @@ public class StuckWin {
 		}
 		return a;
 	}
+
 
 	/**
 	 * gère le jeu en fonction du joueur/couleur
@@ -397,10 +528,6 @@ public class StuckWin {
 						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK)
 						{
 							return 'N';
-						}
-						else
-						{
-							return couleur;
 						}
 					}
 				}
