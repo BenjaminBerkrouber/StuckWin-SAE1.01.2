@@ -42,11 +42,11 @@ public class StuckWin {
 	char[][] state = {
 			{ '-', '-', '-', '-', 'R', 'R', 'R', 'R' },
 			{ '-', '-', '-', '.', 'R', 'R', 'R', 'R' },
-			{ '-', '-', '.', '.', '.', 'R', 'R', 'R' },
-			{ '-', 'B', 'B', '.', '.', '.', 'R', 'R' },
-			{ '-', 'B', 'B', 'B', '.', '.', '.', '-' },
-			{ '-', 'B', 'B', 'B', 'B', '.', '-', '-' },
-			{ '-', 'B', 'B', 'B', 'B', '-', '-', '-' },
+			{ '-', '-', 'R', '.', '.', 'R', 'R', 'R' },
+			{ '-', 'B', 'B', 'R', '.', '.', 'R', 'R' },
+			{ '-', 'B', 'B', 'B', 'R', 'B', '.', '-' },
+			{ '-', 'B', '.', 'R', 'B', 'R', '-', '-' },
+			{ '-', 'B', '.', 'B', 'B', '-', '-', '-' },
 	};	
 
 	/**
@@ -219,32 +219,33 @@ public class StuckWin {
 	 */
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 		String[] possibleDests = new String[3];
+
+
 			if(couleur == joueurs[1]){
-				if(idLettre <= LISTLETTER.length && idLettre >= 0 && idCol-1 <= LISTNUMBER.length && idCol-1 >= 0){
+				if(idLettre <= LISTLETTER.length && idCol-1 <= LISTNUMBER.length && (idCol-1 >= 0 && idCol-1 <= state.length) && (idLettre >= 0 && idLettre <= state[0].length)){
 					possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
 				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-				if(idLettre+1 <= LISTLETTER.length && idLettre+1 >= 0 && idCol-1 <= LISTNUMBER.length && idCol-1 >= 0){
+				if(idLettre+1 <= LISTLETTER.length && idCol-1 <= LISTNUMBER.length && (idLettre+1 >= 0 && idLettre+1 <= state[0].length)&& (idCol-1 >= 0 && idCol-1 <= state.length)){
 					possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
 				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 								
-				if(idLettre+1 <= LISTLETTER.length && idLettre+1 >= 0 && idCol <= LISTNUMBER.length && idCol>= 0){
+				if(idLettre+1 <= LISTLETTER.length && idCol <= LISTNUMBER.length && (idLettre+1 >= 0 && idLettre+1 <= state[0].length)&& (idCol >= 0 && idCol <= state.length)){
 					possibleDests[2] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol];
 				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 				
 			}
 			else
 			{
-				if(idLettre-1 <= LISTLETTER.length && idLettre-1 >= 0 && idCol <= LISTNUMBER.length && idCol >= 0){
+				if(idLettre-1 <= LISTLETTER.length && idCol <= LISTNUMBER.length && (idLettre-1 >= 0 && idLettre-1 <= state[0].length)&& (idCol >= 0 && idCol <= state.length)){
 					possibleDests[0] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol];
 				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-
-				if(idLettre-1 <= LISTLETTER.length && idLettre-1 >= 0 && idCol+1 <= LISTNUMBER.length && idCol+1 >= 0){
+				if(idLettre-1 <= LISTLETTER.length && idCol+1 <= LISTNUMBER.length && (idLettre-1 >= 0 && idLettre-1 <= state[0].length)&& (idCol+1 >= 0 && idCol+1 <= state.length)){
 					possibleDests[1] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol+1];
 				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-				if(idLettre <= LISTLETTER.length && idLettre >= 0 && idCol+1 <= LISTNUMBER.length && idCol+1 >= 0){
+				if(idLettre <= LISTLETTER.length && idCol+1 <= LISTNUMBER.length && (idLettre >= 0 && idLettre <= state[0].length)&& (idCol+1 >= 0 && idCol+1 <= state.length)){
 					possibleDests[2] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol+1];
 				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
@@ -396,7 +397,7 @@ public class StuckWin {
 		// }
 		// return a;
 
-		int MaxScL1=0;
+		int maxSc=0;
 		int xSave=0;
 		int ySave=0;
 
@@ -491,59 +492,63 @@ public class StuckWin {
 											
 											String srcL3 = ""+LISTLETTER[x3]+LISTNUMBER[y3];
 											// Trouver case L4
-											String[] destL4 = possibleDests(couleur, x3, y3);
+											// String[] destL4 = possibleDests(couleur, x3, y3);
 
 											System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = "+x3+"-"+y3+" Score case = "+Sc);
 											
-											for(int possL4=0; possL4<destL4.length;possL4++){
-												if(issetlc(srcL3) && srcL3 != (destL4[possL4])){
-													for(int k=0;k<LISTLETTER.length;k++){
-														if(destL4[possL4].charAt(0) == LISTLETTER[k]){x4=k;}
-													}for(int k=0;k<LISTNUMBER.length;k++){
-														if(destL4[possL4].charAt(1) == LISTNUMBER[k]){y4=k;}
-													}				
+											// for(int possL4=0; possL4<destL4.length;possL4++){
+											// 	if(issetlc(srcL3) && srcL3 != (destL4[possL4])){
+											// 		for(int k=0;k<LISTLETTER.length;k++){
+											// 			if(destL4[possL4].charAt(0) == LISTLETTER[k]){x4=k;}
+											// 		}for(int k=0;k<LISTNUMBER.length;k++){
+											// 			if(destL4[possL4].charAt(1) == LISTNUMBER[k]){y4=k;}
+											// 		}				
 
-													Sc=0;
+											// 		Sc=0;
 
-													switch(state[x4][y4]){
-														case 'R': Sc +=3; break;
-														case 'B': Sc +=2; break;
-														case '.': Sc +=1; break;
-														default: Sc +=0; 
-													}
+											// 		switch(state[x4][y4]){
+											// 			case 'R': Sc +=3; break;
+											// 			case 'B': Sc +=2; break;
+											// 			case '.': Sc +=1; break;
+											// 			default: Sc +=0; 
+											// 		}
 													
-													String srcL4 = ""+LISTLETTER[x4]+LISTNUMBER[y4];
-													// Trouver case L4
-													String[] destL5 = possibleDests(couleur, x4, y4);
+											// 		String srcL4 = ""+LISTLETTER[x4]+LISTNUMBER[y4];
+											// 		// Trouver case L4
+											// 		String[] destL5 = possibleDests(couleur, x4, y4);
 
-													System.out.println("            |"+GREEN_BACKGROUND+srcL4+RESET+" CaseValue = "+state[x4][y4]+" CaseCoo = "+x4+"-"+y4+" Score case = "+Sc);
+											// 		// System.out.println("            |"+GREEN_BACKGROUND+srcL4+RESET+" CaseValue = "+state[x4][y4]+" CaseCoo = "+x4+"-"+y4+" Score case = "+Sc);
 													
-													for(int possL5=0; possL5<destL5.length;possL5++){
-														if(issetlc(srcL4) && srcL4 != (destL5[possL5])){
-															for(int k=0;k<LISTLETTER.length;k++){
-																if(destL5[possL5].charAt(0) == LISTLETTER[k]){x5=k;}
-															}for(int k=0;k<LISTNUMBER.length;k++){
-																if(destL5[possL5].charAt(1) == LISTNUMBER[k]){y5=k;}
-															}				
+											// 		for(int possL5=0; possL5<destL5.length;possL5++){
+											// 			if(issetlc(srcL4) && srcL4 != (destL5[possL5])){
+											// 				for(int k=0;k<LISTLETTER.length;k++){
+											// 					if(destL5[possL5].charAt(0) == LISTLETTER[k]){x5=k;}
+											// 				}for(int k=0;k<LISTNUMBER.length;k++){
+											// 					if(destL5[possL5].charAt(1) == LISTNUMBER[k]){y5=k;}
+											// 				}				
 		
-															Sc=0;
+											// 				Sc=0;
 		
-															switch(state[x5][y5]){
-																case 'R': Sc +=3; break;
-																case 'B': Sc +=2; break;
-																case '.': Sc +=1; break;
-																default: Sc +=0; 
-															}
+											// 				switch(state[x5][y5]){
+											// 					case 'R': Sc +=3; break;
+											// 					case 'B': Sc +=2; break;
+											// 					case '.': Sc +=1; break;
+											// 					default: Sc +=0; 
+											// 				}
+
+											// 				if(maxSc == 1){
+
+											// 				}
 															
-															String srcL5 = ""+LISTLETTER[x5]+LISTNUMBER[y5];
-															// Trouver case L4
-															String[] destL6 = possibleDests(couleur, x5, y5);
+											// 				String srcL5 = ""+LISTLETTER[x5]+LISTNUMBER[y5];
+											// 				// Trouver case L4
+											// 				String[] destL6 = possibleDests(couleur, x5, y5);
 
-															System.out.println("               |"+PURPLE_BACKGROUND+srcL5+RESET+" CaseValue = "+state[x5][y5]+" CaseCoo = "+x5+"-"+y5+" Score case = "+Sc);
-														}
-													}
-												}
-											}
+											// 				// System.out.println("               |"+PURPLE_BACKGROUND+srcL5+RESET+" CaseValue = "+state[x5][y5]+" CaseCoo = "+x5+"-"+y5+" Score case = "+Sc);
+											// 			}
+											// 		}
+											// 	}
+											// }
 										}
 									}
 								}
