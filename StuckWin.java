@@ -17,8 +17,8 @@ public class StuckWin {
 
 	private static final double BOARD_SIZE = 7;
 
-	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'};
-	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'};
+	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'}; // egale à 7 (nombre de ligne state)
+	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'}; // egale à 8 (nombre de colone de state)
 
 	enum Result {
 		OK
@@ -42,11 +42,11 @@ public class StuckWin {
 	char[][] state = {
 			{ '-', '-', '-', '-', 'R', 'R', 'R', 'R' },
 			{ '-', '-', '-', '.', 'R', 'R', 'R', 'R' },
-			{ '-', '-', 'R', '.', '.', 'R', 'R', 'R' },
-			{ '-', 'B', 'B', 'R', '.', '.', 'R', 'R' },
-			{ '-', 'B', 'B', 'B', 'R', 'B', '.', '-' },
-			{ '-', 'B', '.', 'R', 'B', 'R', '-', '-' },
-			{ '-', 'B', '.', 'B', 'B', '-', '-', '-' },
+			{ '-', '-', '.', '.', '.', 'R', 'R', 'R' },
+			{ '-', 'B', 'B', '.', '.', '.', 'R', 'R' },
+			{ '-', 'B', 'B', 'B', '.', '.', '.', '-' },
+			{ '-', 'B', 'B', 'B', 'B', '.', '-', '-' },
+			{ '-', 'B', 'B', 'B', 'B', '-', '-', '-' },
 	};	
 
 	/**
@@ -220,32 +220,32 @@ public class StuckWin {
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 		String[] possibleDests = new String[3];
 
-
 			if(couleur == joueurs[1]){
-				if(idLettre <= LISTLETTER.length && idCol-1 <= LISTNUMBER.length && (idCol-1 >= 0 && idCol-1 <= state.length) && (idLettre >= 0 && idLettre <= state[0].length)){
+				// ----------------
+				if(idLettre < LISTLETTER.length && idCol-1 < LISTNUMBER.length && idCol-1 >= 1 && idLettre >= 0){
 					possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
 				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-
-				if(idLettre+1 <= LISTLETTER.length && idCol-1 <= LISTNUMBER.length && (idLettre+1 >= 0 && idLettre+1 <= state[0].length)&& (idCol-1 >= 0 && idCol-1 <= state.length)){
+				// ------------------
+				if(idLettre+1 < LISTLETTER.length && idCol-1 < LISTNUMBER.length && idCol-1 >= 1 && idLettre+1 >= 0){
 					possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
 				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-								
-				if(idLettre+1 <= LISTLETTER.length && idCol <= LISTNUMBER.length && (idLettre+1 >= 0 && idLettre+1 <= state[0].length)&& (idCol >= 0 && idCol <= state.length)){
+				//  -----------------
+				if(idLettre+1 < LISTLETTER.length && idCol < LISTNUMBER.length && idCol >= 1 && idLettre+1 >= 0){					
 					possibleDests[2] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol];
 				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 				
 			}
 			else
 			{
-				if(idLettre-1 <= LISTLETTER.length && idCol <= LISTNUMBER.length && (idLettre-1 >= 0 && idLettre-1 <= state[0].length)&& (idCol >= 0 && idCol <= state.length)){
+				if(idLettre-1 < LISTLETTER.length && idCol < LISTNUMBER.length && idLettre-1 >= 0 && idCol >= 0 ){
 					possibleDests[0] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol];
 				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-				if(idLettre-1 <= LISTLETTER.length && idCol+1 <= LISTNUMBER.length && (idLettre-1 >= 0 && idLettre-1 <= state[0].length)&& (idCol+1 >= 0 && idCol+1 <= state.length)){
+				if(idLettre-1 < LISTLETTER.length && idCol+1 < LISTNUMBER.length && idLettre-1 >= 0 && idCol+1 >= 0 ){
 					possibleDests[1] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol+1];
 				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
-				if(idLettre <= LISTLETTER.length && idCol+1 <= LISTNUMBER.length && (idLettre >= 0 && idLettre <= state[0].length)&& (idCol+1 >= 0 && idCol+1 <= state.length)){
+				if(idLettre < LISTLETTER.length && idCol+1 < LISTNUMBER.length && idLettre >= 0 && idCol+1 >= 0 ){
 					possibleDests[2] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol+1];
 				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
 
@@ -385,7 +385,7 @@ public class StuckWin {
 		// 		if(state[i][j]== couleur){
 		// 			src = ""+LISTLETTER[i]+LISTNUMBER[j];
 		// 			String[] dest = possibleDests(couleur, i, j);
-		// 			for(int k=0; k<dest.lenght;k++){
+		// 			for(int k=0; k<dest.length;k++){
 		// 				if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK){
 		// 					a[0]=src;
 		// 					a[1]=dest[k];
@@ -397,17 +397,22 @@ public class StuckWin {
 		// }
 		// return a;
 
-		int maxSc=0;
-		int xSave=0;
-		int ySave=0;
-
-		int Sc=0;
+		int maxScL1=1, xSaveL1=0, ySaveL1=0;
+		int maxScL0=1, xSaveL0=0, ySaveL0=0;
 
 		int x1=0,y1=0;
 		int x2=0,y2=0;
 		int x3=0,y3=0;
 		int x4=0,y4=0;
 		int x5=0,y5=0;
+
+		int ScL0=0;
+		int ScL1=0;
+		int ScL2=0;
+		int ScL3=0;
+		int ScL4=0;
+		int ScL5=0;
+		int ScL6=0;
 
 		String[] a = new String[2];
 
@@ -418,15 +423,22 @@ public class StuckWin {
 				if(state[x0][y0]== couleur){
 
 					String srcL0 = ""+LISTLETTER[x0]+LISTNUMBER[y0];
-					
 					// Trouver case L1
 					String[] destL1 = possibleDests(couleur, x0, y0);
+					// System.out.println(WHITE_BACKGROUND+srcL0+RESET+" CaseValue = "+state[x0][y0]+" CaseCoo = "+x0+"-"+y0);
 
-					System.out.println("");
-					System.out.println(WHITE_BACKGROUND+srcL0+RESET+" CaseValue = "+state[x0][y0]+" CaseCoo = "+x0+"-"+y0);
-
+// #######################################################################################################################################################
+// Entrer dans la ligne L1
+// #######################################################################################################################################################
+					ScL1+=ScL2;
 					for(int possL1=0; possL1<destL1.length;possL1++){
 						if(deplace(couleur, srcL0, destL1[possL1], ModeMvt.SIMU) == Result.OK){
+
+							if(ScL0 > maxScL0)
+							{
+								xSaveL0 = x0;
+								ySaveL0 = y0;
+							}
 
 							for(int k=0;k<LISTLETTER.length;k++){
 								if(destL1[possL1].charAt(0) == LISTLETTER[k]){x1=k;}
@@ -434,23 +446,24 @@ public class StuckWin {
 								if(destL1[possL1].charAt(1) == LISTNUMBER[k]){y1=k;}
 							};
 
-							Sc=0;
-
 							switch(state[x1][y1]){
-								case 'R': Sc -=10; break;
-								case 'B': Sc -=10; break;
-								case '.': Sc +=1; break;
-								default: Sc +=0; 
+								case 'R': ScL1 -=10; break;
+								case 'B': ScL1 -=10; break;
+								case '.': ScL1 +=1; break;
+								default: ScL1 +=0; 
 							}
 
 							String srcL1 = ""+LISTLETTER[x1]+LISTNUMBER[y1];
 							// Trouver case L2
 							String[] destL2 = possibleDests(couleur,x1, y1);
 							
-							System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = "+x1+"-"+y1+" Score case = "+Sc);
+							// System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = ["+x1+"-"+y1+"]");
 							
+// #######################################################################################################################################################
+// Entrer dans la ligne L2
+// #######################################################################################################################################################
+							ScL2+=ScL3;
 							for(int possL2=0; possL2<destL2.length;possL2++){
-
 								if(issetlc(srcL1) && srcL1 != (destL2[possL2])){
 									for(int k=0;k<LISTLETTER.length;k++){
 										if(destL2[possL2].charAt(0) == LISTLETTER[k]){x2=k;}
@@ -458,21 +471,24 @@ public class StuckWin {
 										if(destL2[possL2].charAt(1) == LISTNUMBER[k]){y2=k;}
 									}
 
-									Sc=0;
-
 									switch(state[x2][y2]){
-										case 'R': Sc +=3; break;
-										case 'B': Sc +=2; break;
-										case '.': Sc +=1; break;
-										default: Sc +=0; 
+										case 'R': ScL2 +=3; break;
+										case 'B': ScL2 +=2; break;
+										case '.': ScL2 +=1; break;
+										default: ScL2 +=0; 
 									}
 									
 									String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
 									// Trouver case L3 
 									String[] destL3 = possibleDests(couleur, x2, y2);
 
-									System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = "+x2+"-"+y2+" Score case = "+Sc);
+									// System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = ["+x2+"-"+y2+"]");
 
+// #######################################################################################################################################################
+// Entrer dans la ligne L3
+// #######################################################################################################################################################
+									
+									ScL3+=ScL4;
 									for(int possL3=0; possL3<destL3.length;possL3++){
 										if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
 											for(int k=0;k<LISTLETTER.length;k++){
@@ -481,82 +497,122 @@ public class StuckWin {
 												if(destL3[possL3].charAt(1) == LISTNUMBER[k]){y3=k;}
 											}
 
-											Sc=0;
-
 											switch(state[x3][y3]){
-												case 'R': Sc +=3; break;
-												case 'B': Sc +=2; break;
-												case '.': Sc +=1; break;
-												default: Sc +=0; 
+												case 'R': ScL3 +=3; break;
+												case 'B': ScL3 +=2; break;
+												case '.': ScL3 +=1; break;
+												default: ScL3 +=0; 
 											}
 											
 											String srcL3 = ""+LISTLETTER[x3]+LISTNUMBER[y3];
 											// Trouver case L4
-											// String[] destL4 = possibleDests(couleur, x3, y3);
+											String[] destL4 = possibleDests(couleur, x3, y3);
 
-											System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = "+x3+"-"+y3+" Score case = "+Sc);
+											// System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = ["+x3+"-"+y3+"]");
 											
-											// for(int possL4=0; possL4<destL4.length;possL4++){
-											// 	if(issetlc(srcL3) && srcL3 != (destL4[possL4])){
-											// 		for(int k=0;k<LISTLETTER.length;k++){
-											// 			if(destL4[possL4].charAt(0) == LISTLETTER[k]){x4=k;}
-											// 		}for(int k=0;k<LISTNUMBER.length;k++){
-											// 			if(destL4[possL4].charAt(1) == LISTNUMBER[k]){y4=k;}
-											// 		}				
+// #######################################################################################################################################################
+// Entrer dans la ligne L4
+// #######################################################################################################################################################
+											ScL4+=ScL5;
+											for(int possL4=0; possL4<destL4.length;possL4++){
+												if(issetlc(srcL3) && srcL3 != (destL4[possL4])){
+													for(int k=0;k<LISTLETTER.length;k++){
+														if(destL4[possL4].charAt(0) == LISTLETTER[k]){x4=k;}
+													}for(int k=0;k<LISTNUMBER.length;k++){
+														if(destL4[possL4].charAt(1) == LISTNUMBER[k]){y4=k;}
+													}				
 
-											// 		Sc=0;
-
-											// 		switch(state[x4][y4]){
-											// 			case 'R': Sc +=3; break;
-											// 			case 'B': Sc +=2; break;
-											// 			case '.': Sc +=1; break;
-											// 			default: Sc +=0; 
-											// 		}
+													switch(state[x4][y4]){
+														case 'R': ScL4 +=3; break;
+														case 'B': ScL4 +=2; break;
+														case '.': ScL4 +=1; break;
+														default: ScL4 +=0; 
+													}
 													
-											// 		String srcL4 = ""+LISTLETTER[x4]+LISTNUMBER[y4];
-											// 		// Trouver case L4
-											// 		String[] destL5 = possibleDests(couleur, x4, y4);
+													String srcL4 = ""+LISTLETTER[x4]+LISTNUMBER[y4];
+													// Trouver case L4
+													String[] destL5 = possibleDests(couleur, x4, y4);
 
-											// 		// System.out.println("            |"+GREEN_BACKGROUND+srcL4+RESET+" CaseValue = "+state[x4][y4]+" CaseCoo = "+x4+"-"+y4+" Score case = "+Sc);
+													System.out.println();
+													// System.out.println("            |"+GREEN_BACKGROUND+srcL4+RESET+" CaseValue = "+state[x4][y4]+" CaseCoo = ["+x4+"-"+y4+"]");
 													
-											// 		for(int possL5=0; possL5<destL5.length;possL5++){
-											// 			if(issetlc(srcL4) && srcL4 != (destL5[possL5])){
-											// 				for(int k=0;k<LISTLETTER.length;k++){
-											// 					if(destL5[possL5].charAt(0) == LISTLETTER[k]){x5=k;}
-											// 				}for(int k=0;k<LISTNUMBER.length;k++){
-											// 					if(destL5[possL5].charAt(1) == LISTNUMBER[k]){y5=k;}
-											// 				}				
-		
-											// 				Sc=0;
-		
-											// 				switch(state[x5][y5]){
-											// 					case 'R': Sc +=3; break;
-											// 					case 'B': Sc +=2; break;
-											// 					case '.': Sc +=1; break;
-											// 					default: Sc +=0; 
-											// 				}
 
-											// 				if(maxSc == 1){
+// #######################################################################################################################################################
+// Entrer dans la ligne L5
+// #######################################################################################################################################################
+													for(int possL5=0; possL5<destL5.length;possL5++){
+														if(issetlc(srcL4) && srcL4 != (destL5[possL5])){
+															for(int k=0;k<LISTLETTER.length;k++){
+																if(destL5[possL5].charAt(0) == LISTLETTER[k]){x5=k;}
+															}for(int k=0;k<LISTNUMBER.length;k++){
+																if(destL5[possL5].charAt(1) == LISTNUMBER[k]){y5=k;}
+															}				
 
-											// 				}
+															switch(state[x5][y5]){
+																case 'R': ScL5 +=3; break;
+																case 'B': ScL5 +=2; break;
+																case '.': ScL5 +=1; break;
+																default: ScL5 +=0; 
+															}
 															
-											// 				String srcL5 = ""+LISTLETTER[x5]+LISTNUMBER[y5];
-											// 				// Trouver case L4
-											// 				String[] destL6 = possibleDests(couleur, x5, y5);
+															String srcL5 = ""+LISTLETTER[x5]+LISTNUMBER[y5];
+														}
+													}
+													ScL4+=ScL5;
+													// System.out.println("               |"+PURPLE_BACKGROUND+"Valeur L5 = "+ScL5+RESET);
+													ScL5=0;
 
-											// 				// System.out.println("               |"+PURPLE_BACKGROUND+srcL5+RESET+" CaseValue = "+state[x5][y5]+" CaseCoo = "+x5+"-"+y5+" Score case = "+Sc);
-											// 			}
-											// 		}
-											// 	}
-											// }
+// #######################################################################################################################################################
+// Fin recherche L5
+// #######################################################################################################################################################
+												} 
+											}
+											ScL3+=ScL4;
+											// System.out.println("            |"+GREEN_BACKGROUND+"Valeur L4 = "+(ScL4)+RESET);
+											ScL4=0;
+// #######################################################################################################################################################
+// Fin recherche L4
+// #######################################################################################################################################################
 										}
 									}
+									ScL2+=ScL3;								
+									// System.out.println("         |"+RED_BACKGROUND+"Valeur L3 = "+ScL3+RESET);
+									ScL3=0;
+									
+// #######################################################################################################################################################
+// Fin recherche L3
+// #######################################################################################################################################################
 								}
 							}
+							ScL1+=ScL2;
+							// System.out.println("      |"+BLACK_BACKGROUND+"Valeur L2 = "+ScL2+RESET);
+							ScL2=0;
+// #######################################################################################################################################################
+// Fin recherche L2
+// #######################################################################################################################################################
 						}
 					}
+					ScL0+=ScL1;
+					if(ScL1>maxScL1){
+						xSaveL1 = x1;
+						ySaveL1 = y1;
+					}
+
+					System.out.println("  |"+BLUE_BACKGROUND+"Puissance déplacement "+srcL0+" => "+LISTLETTER[x1]+LISTNUMBER[y1]+" = "+ScL1+RESET);
+					ScL1=0;
+
+// #######################################################################################################################################################
+// Fin recherche L1
+// #######################################################################################################################################################
 				}
 			}
+			// System.out.println(WHITE_BACKGROUND+"Puissance du pion : "+LISTLETTER[x0]+LISTNUMBER[y0]+" = "+ScL0+RESET);
+			ScL0=0;
+
+// #######################################################################################################################################################
+// Fin recherche L0
+// #######################################################################################################################################################
+
 		}
 		return a;
 	}
@@ -598,18 +654,13 @@ public class StuckWin {
 	 */
 	char finPartie(char couleur) {
 		
-		for(int i=0; i<state.length;i++)
-		{
-			for(int j=0;j<state[i].length;j++)
-			{
-				if(state[i][j] == couleur)
-				{
+		for(int i=0; i<state.length;i++){
+			for(int j=0;j<state[i].length;j++){
+				if(state[i][j] == couleur){
 					String src = ""+LISTLETTER[i]+LISTNUMBER[j];
 					String[] possibleDests = possibleDests(couleur, i, j);
-					for(int k=0; k < possibleDests.length;k++)
-					{
-						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK)
-						{
+					for(int k=0; k < possibleDests.length;k++){
+						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK){
 							return 'N';
 						}
 					}
