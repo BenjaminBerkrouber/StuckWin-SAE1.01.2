@@ -17,11 +17,20 @@ public class StuckWin {
 	public static final String CYAN_BACKGROUND = "\033[46m";   // CYAN
 	public static final String WHITE_BACKGROUND = "\033[47m";  // WHITE
 
+	public static final double ANGLE_STEP = 2 * Math.PI / 6;
+
+
 	private static final double BOARD_SIZE = 7;
 
+	// Initialisation de deux tableau contenant les lettre et numéro pour l'identification des cases.
 	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'}; // egale à 7 (nombre de ligne state)
 	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'}; // egale à 8 (nombre de colone de state)
 
+	// Initialisation de la taille des case et des pions de l'interface graphique
+	public static final double radiusCase = 1.5;
+	public static final double radiusPion = 0.8;
+
+	// Liste d'énumération des différente erreur possible
 	enum Result {
 		OK
 		, BAD_COLOR
@@ -30,16 +39,23 @@ public class StuckWin {
 		, TOO_FAR
 		, EXT_BOARD
 		, EXIT
+		, BAD_SRC
 	}
 
+	// Défini la possiblité de tester un déplacement ou de l'éxécuter 
 	enum ModeMvt {
 		REAL
 		, SIMU
 	}
 
+	// Tableau comportant le nombre de joueur et leur noms
 	final char[] joueurs = { 'B', 'R' };
+
 	final int SIZE = 8;
+
+	// Constante qui défini un espace vide dans le tableau
 	final char VIDE = '.';
+
 	// 'B'=bleu 'R'=rouge '.'=vide '-'=n'existe pas
 	char[][] state = {
 			{ '-', '-', '-', '-', 'R', 'R', 'R', 'R' },
@@ -73,20 +89,19 @@ public class StuckWin {
 		char currentCase;
 		char destCase;
 
-		int xSource=0;
-		int ySource=0;
-		int xDest=0;
-		int yDest=0;
+		int xSource=0, ySource=0;
+		int xDest=0, yDest=0;
 
 		// Vérification que le joueur entre 2 caractère et qu'il corresponde au élement des tableau
 		if(lcSource.length() != 2 || lcDest.length() != 2)
 		{
-			result = Result.EMPTY_SRC;return result;
+			result = Result.BAD_SRC;return result;
 		}
 
+		// Vérifié que la case de départ et la case d'arrive existe dans le tableau (A1) et non (/^)
 		if(!(issetlc(lcSource)) || !(issetlc(lcDest)))
 		{
-			result = Result.EMPTY_SRC;return result;
+			result = Result.BAD_SRC;return result;
 		}
 
 		// Initialisation de x-y Source et Dest  
@@ -97,7 +112,6 @@ public class StuckWin {
 		yDest = setCo('N', lcDest.charAt(1));
 
 		// Initialisation de currentCase & destCase
-
 		currentCase = state[xSource][ySource];
 		destCase = state[xDest][yDest];
 
@@ -253,60 +267,121 @@ public class StuckWin {
 		return possibleDests;
 	}
 
-	// void graphiqueAffiche(){
+	void graphiqueAffiche(){
 
-	// 	StdDraw.setXscale(-1.2, 1.2);
-    //     StdDraw.setYscale(-1.2, 1.2);
+		StdDraw.setXscale(-10.5, 10.5);
+        StdDraw.setYscale(-10.5, 10.5);
 
-    //     StdDraw.setPenRadius(0.001);
-    //     StdDraw.setPenColor(StdDraw.BLUE);
-	// 	StdDraw.enableDoubleBuffering();
+		StdDraw.enableDoubleBuffering();
+
+		double x= 0;
+		double y= 0;
+
+		x= -7;
+		y= 3;
+		for(int i = 4; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+		}
+
+		x= -7;
+		y= 1;
+		for(int i = 3; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+			System.out.println(x);
+			System.out.println(y);
+		}
+
+		x= -7;
+		y= -1;
+		for(int i = 2; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+
+		}
+
+		x= -7;
+		y= -3;
+		for(int i = 1; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+
+		}
+
+		x= -5.5;
+		y= -4;
+		for(int i = 1; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+
+		}
+
+		x= -4;
+		y= -5;
+		for(int i = 1; i<8; i++, x+=1.5, y+=1){
+			drawHega(x, y);
+
+		}
 
 
-	// 	// StdDraw.circle(0, 1, 0.1);
-	// 	// StdDraw.circle(0, 1, 0.1);
-	// 	int x= 0;
-	// 	int y= 1;
 
-	// 	for(int i=0;i<state.length;i++)
-	// 	{
-	// 		for (int j = 0, diag = state.length - i; j < 1 + i; j++, diag++){
-	// 			StdDraw.circle(x, y, 0.1);
-	// 			System.out.println(j+" - "+diag);
-	// 		}
-	// 		x -= 0.1;
-	// 		y -= 0.1;
-	// 		System.out.println("");
-	// 	}
+		// for(int i=0;i<state.length;i++)
+		// {
+		// 	toto = 0;
+		// 	x = -7;
+		// 	System.out.println(state.length -1);
+		// 	for (int space = state.length -1; space >= i; space--) {
+		// 		System.out.println(space);
+		// 		toto++;
+		// 	}
+		// 	System.out.println(toto);
+		// 	x = x + (1 * toto);
 
-	// 	// double[] tPointsX = new double[6];
-    //     // double[] tPointsY = new double[6];
+		// 	for (int j=0;j<state[i].length;j++){
+		// 		y--;
+		// 		if(state[i][j] != '-'){
 
-	// 	// setPoints(tPointsX, tPointsY);
+		// 			StdDraw.setPenRadius(0.001);
+		// 			StdDraw.setPenColor(StdDraw.BLACK);
+		// 			StdDraw.circle(x, y, radiusCase);
+		// 			drawHega(x, y);
 
-	// 	// StdDraw.polygon(tPointsX, tPointsY);
+		// 			switch(state[i][j]){
+		// 				case 'R': 
+		// 					StdDraw.setPenColor(StdDraw.RED);
+		// 					StdDraw.filledCircle(x, y, radiusPion);
+		// 					break;
+		// 				case 'B':
+		// 					StdDraw.setPenColor(StdDraw.BLUE);
+		// 					StdDraw.filledCircle(x, y, radiusPion);
+		// 					break;
+		// 				case '.': 
+		// 					StdDraw.setPenColor(StdDraw.WHITE);
+		// 					StdDraw.filledCircle(x, y, radiusPion);
+		// 					break;
+		// 			}
 
-    //     StdDraw.show();
+		// 			StdDraw.setPenRadius(0.01);
+		// 			StdDraw.setPenColor(StdDraw.GREEN);
+		// 			StdDraw.point(x, y);
+
+		// 		}
+		// 	}
+		// }
+
+        StdDraw.show();
 		
-	// }
+	}
 
-	/**
-     * Calcule les coordonnées de points répartis sur le cercle trigo
-     * et les range dans 2 tableaux 1D
-     * @param tX tableau des abscisses
-     * @param tY tableau des ordonnées
-     */
-    public static void setPoints(double[] tX, double[] tY) {
-        int n = tX.length;
-        final double ANGLE_STEP = 2 * Math.PI / n;
-        for (int i = 0; i < n; i++) {
-            tX[i] = Math.cos(i * ANGLE_STEP);
-            tY[i] = Math.sin(i * ANGLE_STEP);
-        }
-    }
+	public static void drawHega(double x,double y) {
+		StdDraw.setPenRadius(0.002);
+		for (int i = 0; i < 6; i++) {
+			StdDraw.line(x + Math.cos(i*ANGLE_STEP)
+						,y + Math.sin(i * ANGLE_STEP)
+						,x + Math.cos((i+1) * ANGLE_STEP)
+						,y + Math.sin((i+1) * ANGLE_STEP));
+		}
+		StdDraw.setPenRadius(0.001);
+	}
 
 	void affiche() {
-		// graphiqueAffiche();
+		graphiqueAffiche();
 		// Déclaration des variable pour parcourire le tableau
 		int column, line, diag, space;
         char letterCase,numberCase;
@@ -331,9 +406,9 @@ public class StuckWin {
 				* VERIFIER AFFICHAGE AVEC joueurs[0] pour B
 				*/
 				switch(state[line][diag]){
-					case VIDE: System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
-					case 'R': System.out.print(RED_BACKGROUND + letterCase + numberCase+ RESET);;break;
-					case 'B': System.out.print(BLUE_BACKGROUND + letterCase + numberCase + RESET);break;
+					case VIDE: System.out.print(ConsoleColors.WHITE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
+					case 'R': System.out.print(ConsoleColors.RED_BACKGROUND + letterCase + numberCase+ ConsoleColors.RESET);;break;
+					case 'B': System.out.print(ConsoleColors.BLUE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
 					case '-': System.out.print("  ");
 				}
 				// Ajout des espaces entre les cases
@@ -357,9 +432,9 @@ public class StuckWin {
 				numberCase = LISTNUMBER[diag];
 
 				switch(state[line][diag]){
-					case VIDE: System.out.print(WHITE_BACKGROUND + letterCase + numberCase + RESET);break;
-					case 'R': System.out.print(RED_BACKGROUND + letterCase + numberCase+ RESET);;break;
-					case 'B': System.out.print(BLUE_BACKGROUND + letterCase + numberCase + RESET);break;
+					case VIDE: System.out.print(ConsoleColors.WHITE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
+					case 'R': System.out.print(ConsoleColors.RED_BACKGROUND + letterCase + numberCase+ ConsoleColors.RESET);;break;
+					case 'B': System.out.print(ConsoleColors.BLUE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
 					case '-': System.out.print("  ");
 				}
 				System.out.print("  ");
@@ -377,24 +452,28 @@ public class StuckWin {
 	 */
 	String[] jouerIA(char couleur) {
 
-		// String src = "";
-		// String[] a = new String[2];
-		// for(int i=0; i < state.length;i++){
-		// 	for(int j=0; j < state[i].length;j++){
-		// 		if(state[i][j]== couleur){
-		// 			src = ""+LISTLETTER[i]+LISTNUMBER[j];
-		// 			String[] dest = possibleDests(couleur, i, j);
-		// 			for(int k=0; k<dest.length;k++){
-		// 				if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK){
-		// 					a[0]=src;
-		// 					a[1]=dest[k];
-		// 					return a;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// return a;
+		String src = "";
+		String dest = "";
+
+
+			// String[] a = new String[2];
+			// for(int i=0; i < state.length;i++){
+			// 	for(int j=0; j < state[i].length;j++){
+			// 		if(state[i][j]== couleur){
+			// 			src = ""+LISTLETTER[i]+LISTNUMBER[j];
+			// 			String[] dest = possibleDests(couleur, i, j);
+			// 			for(int k=0; k<dest.length;k++){
+			// 				if(deplace(couleur, src, dest[k], ModeMvt.SIMU) == Result.OK){
+			// 					a[0]=src;
+			// 					a[1]=dest[k];
+			// 					return a;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
+			// return a;
+
 
 		int maxScL1=0, xSaveL1=0, ySaveL1=0;
 		int maxScL0=0, xSaveL0=0, ySaveL0=0;
@@ -413,7 +492,9 @@ public class StuckWin {
 		int ScL5=0;
 		int ScL6=0;
 
-		String[] a = new String[2];
+		int[] ScL1Tab = new int[2];
+
+		String[] move = new String[2];
 
 
 		// Trouver case L0
@@ -422,32 +503,24 @@ public class StuckWin {
 				if(state[x0][y0]== couleur){
 					String srcL0 = ""+LISTLETTER[x0]+LISTNUMBER[y0];
 
-					System.out.println("");
-					System.out.println("");
-					System.out.println(WHITE_BACKGROUND+srcL0+RESET+" CaseValue = "+state[x0][y0]+" CaseCoo = "+x0+"-"+y0);
+					// System.out.println("");
+					// System.out.println("");
+					// System.out.println(WHITE_BACKGROUND+srcL0+RESET+" CaseValue = "+state[x0][y0]+" CaseCoo = "+x0+"-"+y0);
 
 					// Trouver case L1
 					String[] destL1 = possibleDests(couleur, x0, y0);
 					ScL1+=ScL2;
+					
 					for(int possL1=0; possL1<destL1.length;possL1++){
 						if(deplace(couleur, srcL0, destL1[possL1], ModeMvt.SIMU) == Result.OK){
 
-							int ScL1s = ScL1;
-
 							x1= setCo('L', destL1[possL1].charAt(0));
 							y1= setCo('N', destL1[possL1].charAt(1));
+
 							ScL1 = AddSc(ScL1, couleur, x1, y1,1);
 							
-							// System.out.println("ici pd" + maxScL1 + (ScL1-ScL1s));
-
-							if(ScL1-ScL1s>maxScL1){
-								xSaveL1 = x1;
-								ySaveL1 = y1;
-								maxScL1 = ScL1-ScL1s;
-							}
-
 							String srcL1 = ""+LISTLETTER[x1]+LISTNUMBER[y1];
-							System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = ["+x1+"-"+y1+"]");
+							// System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = ["+x1+"-"+y1+"]");
 
 							// Trouver case L2
 							String[] destL2 = possibleDests(couleur,x1, y1);							
@@ -459,12 +532,11 @@ public class StuckWin {
 									ScL2 = AddSc(ScL2, couleur, x2, y2,1);
 									String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
 									
-									System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = ["+x2+"-"+y2+"]");
-									
+									// System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = ["+x2+"-"+y2+"]");							
 
 									// Trouve case L3
 									String[] destL3 = possibleDests(couleur, x2, y2);
-									// ScL3+=ScL4;
+									ScL3+=ScL4;
 									for(int possL3=0;possL3<destL3.length;possL3++){
 										if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
 											x3= setCo('L', destL3[possL3].charAt(0));
@@ -472,36 +544,107 @@ public class StuckWin {
 											ScL3 = AddSc(ScL3, couleur, x3, y3,1);
 											String srcL3 = ""+LISTLETTER[x3]+LISTNUMBER[y3];
 
-											System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = ["+x3+"-"+y3+"]");
+											// System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = ["+x3+"-"+y3+"]");
+
 										}
 									}
 									ScL2+=ScL3;
-									System.out.println("         |"+RED_BACKGROUND+"Valeur L3 = "+ScL3+RESET);
+									// System.out.println("         |"+RED_BACKGROUND+"Valeur L3 = "+ScL3+RESET);
 									ScL3=0;
 								}
 							}
 							ScL1+=ScL2;
-							System.out.println("      |"+BLACK_BACKGROUND+"Valeur L2 = "+ScL2+RESET);
+							// System.out.println("      |"+BLACK_BACKGROUND+"Valeur L2 = "+ScL2+RESET);
 							ScL2=0;
 						}
 					}
 					ScL0+=ScL1;
-					System.out.println("  |"+BLUE_BACKGROUND+"Valeur L1 = "+ScL1+RESET);
+					// System.out.println("  |"+BLUE_BACKGROUND+"Valeur L1 = "+ScL1+RESET);
 					ScL1=0;
 
 					if(ScL0 > maxScL0){
+						move[0] = ""+LISTLETTER[x0]+LISTNUMBER[y0];
 						xSaveL0 = x0;
 						ySaveL0 = y0;
 						maxScL0 = ScL0;
 					}
-					System.out.println(WHITE_BACKGROUND+"Valeur L0 = "+ScL0+RESET);
+
+					// System.out.println(WHITE_BACKGROUND+"Valeur L0 = "+ScL0+RESET);
 					ScL0=0;
 				}
 			}
 		}
-		System.out.println("Meilleur coup = "+LISTLETTER[xSaveL0]+LISTNUMBER[ySaveL0]+"=>"+LISTLETTER[xSaveL1]+LISTNUMBER[ySaveL1]);
-		return a;
+
+		System.out.println("meilleur case : "+move[0]);
+
+		String[] destL1 = possibleDests(couleur, xSaveL0, ySaveL0);
+
+
+
+		for(int possL1=0; possL1<destL1.length;possL1++){
+			if(deplace(couleur, move[0], destL1[possL1], ModeMvt.SIMU) == Result.OK){
+
+				System.out.println("test");
+
+				x1= setCo('L', destL1[possL1].charAt(0));
+				y1= setCo('N', destL1[possL1].charAt(1));
+
+				System.out.println(x1+"-"+y1);
+
+				ScL1 = AddSc(ScL1, couleur, x1, y1,1);
+				String srcL1 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
+				String[] destL2 = possibleDests(couleur,x1, y1);							
+
+				for(int possL2=0; possL2<destL2.length;possL2++){
+					if(issetlc(srcL1) && srcL1 != (destL2[possL2])){
+						x2= setCo('L', destL2[possL2].charAt(0));
+						y2= setCo('N', destL2[possL2].charAt(1));
+
+						ScL2 = AddSc(ScL2, couleur, x2, y2,1);
+						String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
+						String[] destL3 = possibleDests(couleur,x2, y2);
+						
+						for(int possL3=0; possL3<destL3.length;possL3++){
+							if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
+								x3= setCo('L', destL3[possL3].charAt(0));
+								y3= setCo('N', destL3[possL3].charAt(1));
+		
+								ScL3 = AddSc(ScL2, couleur, x2, y2,1);
+							}
+						}
+						ScL2+=ScL3;
+						ScL3=0;
+					}
+				}
+				ScL1+=ScL2;
+				ScL2=0;
+			}
+
+			if(ScL1 > maxScL1){
+				System.out.println(RED_BACKGROUND+move[1]+RESET);
+				move[1] = ""+LISTLETTER[x1]+LISTNUMBER[y1];
+			}
+			ScL1=0;
+		}
+
+		System.out.println(move[0]+" =>"+move[1]);
+
+		return move;
 	}
+
+
+
+
+	public String bestCase(){
+
+		return "az";
+	}
+
+	public String bestMove(String src){
+
+		return "AZ";
+	}
+
 
 	public int AddSc(int ScL, char couleur, int x, int y, int coef){
 		if(couleur == joueurs[0]){
@@ -509,7 +652,7 @@ public class StuckWin {
 				case 'R': ScL +=5*coef; break;
 				case 'B': ScL +=10*coef; break;
 				case '.': ScL +=1*coef; break;
-				case '-': ScL +=15*coef; break;
+				case '-': ScL +=5*coef; break;
 				default: ScL +=0; 
 			}
 		}else if(couleur == joueurs[1]){
@@ -517,7 +660,7 @@ public class StuckWin {
 				case 'R': ScL +=10*coef; break;
 				case 'B': ScL +=5*coef; break;
 				case '.': ScL +=1*coef; break;
-				case '-': ScL +=15*coef; break;
+				case '-': ScL +=5*coef; break;
 				default: ScL +=0; 
 			}
 		}
@@ -580,6 +723,7 @@ public class StuckWin {
 	}
 
 	public static void main(String[] args) {
+
 		StuckWin jeu = new StuckWin();
 		String src = "";
 		String dest;
@@ -611,6 +755,7 @@ public class StuckWin {
 			nextCouleur = tmp;
 			cpt++;
 		} while (partie == 'N'); // TODO affiche vainqueur
+		jeu.affiche();
 		System.out.printf("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
 	}
 }
