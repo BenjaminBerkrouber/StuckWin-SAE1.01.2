@@ -1,34 +1,30 @@
-import java.net.IDN;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
-import javax.print.DocFlavor.STRING;
+import javax.print.attribute.standard.PrinterInfo;
 
 public class StuckWin {
 
+	// Permet de lire des donnée entrer par l'utilisateur
 	static final Scanner input = new Scanner(System.in);
-	
-	public static final String RESET = "\033[0m"; // Text Reset
-	public static final String BLACK_BACKGROUND = "\033[40m";  // BLACK
-	public static final String RED_BACKGROUND = "\033[41m";    // RED
-	public static final String GREEN_BACKGROUND = "\033[42m";  // GREEN
-	public static final String YELLOW_BACKGROUND = "\033[43m"; // YELLOW
-	public static final String BLUE_BACKGROUND = "\033[44m";   // BLUE
-	public static final String PURPLE_BACKGROUND = "\033[45m"; // PURPLE
-	public static final String CYAN_BACKGROUND = "\033[46m";   // CYAN
-	public static final String WHITE_BACKGROUND = "\033[47m";  // WHITE
 
-	public static final double ANGLE_STEP = 2 * Math.PI / 6;
-
-
+	// 
 	private static final double BOARD_SIZE = 7;
 
-	// Initialisation de deux tableau contenant les lettre et numéro pour l'identification des cases.
+	// Initialisation de deux tableaux contenants les lettres et numéros pour l'identification des cases.
 	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'}; // egale à 7 (nombre de ligne state)
 	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'}; // egale à 8 (nombre de colone de state)
 
 	// Initialisation de la taille des case et des pions de l'interface graphique
 	public static final double radiusCase = 1.5;
 	public static final double radiusPion = 0.8;
+	public static final double radiusPionEfface = 0.81;
+
+	// Angle pour les hexagone dans l'interface graphique
+	public static final double ANGLE_STEP = 2 * Math.PI / 6;
 
 	// Liste d'énumération des différente erreur possible
 	enum Result {
@@ -51,6 +47,14 @@ public class StuckWin {
 	// Tableau comportant le nombre de joueur et leur noms
 	final char[] joueurs = { 'B', 'R' };
 
+	// 
+	public static final List<String> coup = new ArrayList<>();
+	public static final List<String> etat = new ArrayList<>();
+
+	public static final List<String> win = new ArrayList<>();
+
+
+	// 
 	final int SIZE = 8;
 
 	// Constante qui défini un espace vide dans le tableau
@@ -85,56 +89,75 @@ public class StuckWin {
 		// Tableau qui stock les case possiblement jouable
 		String[] possibleDests = new String[3];
 
-		// Stock la valeur de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
+		// Initialisation des valeur de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
 		char currentCase;
 		char destCase;
 
+		// Initialisation des coordonnée x-y Source et Dest
 		int xSource=0, ySource=0;
 		int xDest=0, yDest=0;
 
 		// Vérification que le joueur entre 2 caractère et qu'il corresponde au élement des tableau
 		if(lcSource.length() != 2 || lcDest.length() != 2)
 		{
-			result = Result.BAD_SRC;return result;
+			result = Result.BAD_SRC;
+			printError("BAD_SRC");
+			etat.add("BAD_SRC");
+			return result;
 		}
 
 		// Vérifié que la case de départ et la case d'arrive existe dans le tableau (A1) et non (/^)
 		if(!(issetlc(lcSource)) || !(issetlc(lcDest)))
 		{
-			result = Result.BAD_SRC;return result;
+			result = Result.BAD_SRC;
+			printError("BAD_SRC");
+			etat.add("BAD_SRC");
+			return result;
 		}
 
-		// Initialisation de x-y Source et Dest  
+		// Assignation de x-y Source et Dest  
 		xSource = setCo('L', lcSource.charAt(0));
 		ySource = setCo('N', lcSource.charAt(1));
 
 		xDest = setCo('L', lcDest.charAt(0));
 		yDest = setCo('N', lcDest.charAt(1));
 
-		// Initialisation de currentCase & destCase
+		// Assignation de currentCase & destCase
 		currentCase = state[xSource][ySource];
 		destCase = state[xDest][yDest];
 
 		// Vérifie qu'il existe un pion dans la case
 		if(emptylc(currentCase)){
-			result = Result.EMPTY_SRC; return result;
+			result = Result.EMPTY_SRC;
+			printError("EMPTY_SRC");
+			etat.add("EMPTY_SRC");
+			return result;
 		}
 		
 		// Vérification couleur du pion à déplace = couleur du joueur
 		if(currentCase != couleur){
-			result = Result.BAD_COLOR; return result;
+			result = Result.BAD_COLOR; 
+			printError("BAD_COLOR");
+			etat.add("BAD_COLOR");
+			return result;
 		}
 
 		// Vérifie que la case d'arriver est dans les bordure
 		if(destCase == '-')
 		{
-			result = Result.EXT_BOARD;return result;
+			result = Result.EXT_BOARD;
+			printError("EXT_BOARD");
+			etat.add("EXT_BOARD");
+			return result;
 		}
 
 		// Vérifie que la case d'arriver n'est pas occuper
 		if(destCase != VIDE)
 		{
-			result = Result.DEST_NOT_FREE; return result;
+			result = Result.DEST_NOT_FREE; 
+			printError("DEST_NOT_FREE");
+			etat.add("DEST_NOT_FREE");
+			return result;
 		}
 
 		// Verifie la distance entre la case de départ et la case d'arrivé
@@ -144,7 +167,10 @@ public class StuckWin {
 		|| possibleDests[1].equals(lcDest) 
 		|| possibleDests[2].equals(lcDest)))
 		{
-			result = Result.TOO_FAR;return result;
+			result = Result.TOO_FAR;
+			printError("TOO_FAR");
+			etat.add("BAD_SRC");
+			return result;
 		}
 
 		// Déplacement du pion
@@ -153,11 +179,66 @@ public class StuckWin {
 			state[xDest][yDest] = state[xSource][ySource];
 			state[xSource][ySource] = VIDE;
 		}
+
+		etat.add("OK");
 		
+		// Renvoie OK si toute les vérification son passer
 		result = Result.OK; return result;
 	}
-	
 
+	/**
+	 * Verifie si la case que on souhaite jouer existe dans le tableau
+	 * @param lcSource La case du tableau que on jeu jouer
+	 * @return true si il existe un pion sinon false.
+	 */
+	public boolean issetlc(String lcSource){
+		boolean issetLC = false;
+		boolean issetL = false;
+		boolean issetC = false;
+
+		// Vérification dans LISTNUMBER si le numéro (column) existe 
+		for(int i=0; i<LISTNUMBER.length;i++){
+			if(LISTNUMBER[i] == lcSource.charAt(1)){
+				issetC = true;
+			}
+		}
+
+		// Vérification dans LISTLETTER si la lettre (ligne) existe
+		for(int i=0; i <LISTLETTER.length; i++){
+			if(LISTLETTER[i] == lcSource.charAt(0)){
+				issetL = true;
+			}
+		}
+
+		// Si la lettre (L) et le numéro (C) existe return true
+		if(issetC && issetL){
+			issetLC= true;
+		}
+
+		return issetLC;
+	}
+
+	/**
+	 * Verifie si il existe un pion dans la case que on souhaite jouer
+	 * à partir de la position de départ currentCase.
+	 * @param currentCase La case du tableau que on jeu jouer
+	 * @return false si il existe un pion sinon true.
+	 */
+	public boolean emptylc(char currentCase){
+		boolean emptylc = true;
+		for(int i=0; i < joueurs.length; i++){
+			if(currentCase == joueurs[i]){
+				emptylc = false;
+			}
+		}
+		return emptylc;
+	}
+
+	/**
+	 * Verifie si la case que on souhaite jouer existe dans le tableau
+	 * @param List
+	 * @return 
+	 */
 	public int setCo(char List, char element){
 		if(List == 'L'){
 			for(int i =0; i < LISTLETTER.length; i++){
@@ -175,51 +256,6 @@ public class StuckWin {
 		return 0;
 	}
 
-		/**
-	 * Verifie si la case que on souhaite jouer existe dans le tableau
-	 * @param lcSource La case du tableau que on jeu jouer
-	 * @return true si il existe un pion sinon false.
-	 */
-	public boolean issetlc(String lcSource){
-		boolean issetLC = false;
-		boolean issetL = false;
-		boolean issetC = false;
-
-		for(int i=0; i<LISTNUMBER.length;i++){
-			if(LISTNUMBER[i] == lcSource.charAt(1)){
-				issetC = true;
-			}
-		}
-
-		for(int i=0; i <LISTLETTER.length; i++){
-			if(LISTLETTER[i] == lcSource.charAt(0)){
-				issetL = true;
-			}
-		}
-
-		if(issetC && issetL){
-			issetLC= true;
-		}
-
-		return issetLC;
-	}
-
-	/**
-	 * Verifie si il existe un pion dans la case que on souhaite jouer
-	 * à partir de la position de départ currentCase.
-	 * @param currentCase La case du tableau que on jeu jouer
-	 * @return true si il existe un pion sinon false.
-	 */
-	public boolean emptylc(char currentCase){
-		boolean emptylc = true;
-		for(int i=0; i < joueurs.length; i++){
-			if(currentCase == joueurs[i]){
-				emptylc = false;
-			}
-		}
-		return emptylc;
-	}
-
 	/**
 	 * Construit les trois chaînes représentant les positions accessibles
 	 * à partir de la position de départ [idLettre][idCol].
@@ -233,35 +269,65 @@ public class StuckWin {
 	String[] possibleDests(char couleur, int idLettre, int idCol) {
 		String[] possibleDests = new String[3];
 
+			// Vérifie les possibleDests pour le joueur Rouge 
 			if(couleur == joueurs[1]){
-				// ----------------
-				if(idLettre < LISTLETTER.length && idCol-1 < LISTNUMBER.length && idCol-1 >= 1 && idLettre >= 0){
-					possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
-				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-				// ------------------
-				if(idLettre+1 < LISTLETTER.length && idCol-1 < LISTNUMBER.length && idCol-1 >= 1 && idLettre+1 >= 0){
-					possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
-				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-				//  -----------------
-				if(idLettre+1 < LISTLETTER.length && idCol < LISTNUMBER.length && idCol >= 1 && idLettre+1 >= 0){					
-					possibleDests[2] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol];
-				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-				
+
+				// Vérifie si [idLettre|idCol-1] existe
+				if(idLettre < LISTLETTER.length && idLettre >= 0 
+					&& idCol-1 < LISTNUMBER.length && idCol-1 >= 1 ){
+						possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
+				}else{
+					// Sinon revoie la case actuelle
+					possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
+
+				// Vérifie si [idLettre+1|idCol-1] existe
+				if(idLettre+1 < LISTLETTER.length && idLettre+1 >= 0 
+					&& idCol-1 < LISTNUMBER.length && idCol-1 >= 1){
+						possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
+				}else{
+					// Sinon revoie la case actuelle
+					possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
+
+				// Vérifie si [idLettre+1|idCol] existe
+				if(idLettre+1 < LISTLETTER.length && idLettre+1 >= 0 
+					&& idCol < LISTNUMBER.length && idCol >= 1){					
+						possibleDests[2] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol];
+				}else{
+					// Sinon renvoie la case actuelle
+					possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
 			}
+			// Vérifie les possibleDests pour le joueur Bleu
 			else
 			{
-				if(idLettre-1 < LISTLETTER.length && idCol < LISTNUMBER.length && idLettre-1 >= 0 && idCol >= 0 ){
-					possibleDests[0] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol];
-				}else{possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+				// Vérifie si [idLettre-1|idCol] existe
+				if(idLettre-1 < LISTLETTER.length && idLettre-1 >= 0 
+					&& idCol < LISTNUMBER.length && idCol >= 0 ){
+						possibleDests[0] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol];
+				}else{
+					// Sinon renvoie la case actuelle
+					possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
 
-				if(idLettre-1 < LISTLETTER.length && idCol+1 < LISTNUMBER.length && idLettre-1 >= 0 && idCol+1 >= 0 ){
-					possibleDests[1] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol+1];
-				}else{possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
+				// Vérifie si [idLettre-1|idCol-1] existe
+				if(idLettre-1 < LISTLETTER.length && idLettre-1 >= 0 
+					&& idCol+1 < LISTNUMBER.length && idCol+1 >= 0 ){
+						possibleDests[1] = ""+LISTLETTER[idLettre-1]+LISTNUMBER[idCol+1];
+				}else{
+					// Sinon renvoie la case actuelle
+					possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
 
-				if(idLettre < LISTLETTER.length && idCol+1 < LISTNUMBER.length && idLettre >= 0 && idCol+1 >= 0 ){
-					possibleDests[2] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol+1];
-				}else{possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];}
-
+				// Vérifie si [idLettre|idCol+1] existe
+				if(idLettre < LISTLETTER.length && idLettre >= 0  
+					&& idCol+1 < LISTNUMBER.length && idCol+1 >= 0 ){
+						possibleDests[2] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol+1];
+				}else{
+					// Sinon renvoie la case actuelle
+					possibleDests[2]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
+				}
 			}
 
 		return possibleDests;
@@ -271,105 +337,88 @@ public class StuckWin {
 
 		StdDraw.setXscale(-10.5, 10.5);
         StdDraw.setYscale(-10.5, 10.5);
-
 		StdDraw.enableDoubleBuffering();
 
+		StdDraw.setTitle("StuckWin");
+		StdDraw.picture(0, 0, "back.jpg", 25, 25);
+		StdDraw.picture(-8, -5, "player.png", 5, 8);
+		StdDraw.picture(8, 5, "ia1.png", 5, 8);
+
+
+		int i;
 		double x= 0;
 		double y= 0;
+		String lc = "";
 
-		x= -7;
+
+		x= -5;
 		y= 3;
-		for(int i = 4; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
+		i=0;
+		for(int j = 4; j<8; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-		x= -7;
+		x= -5;
 		y= 1;
-		for(int i = 3; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
-			System.out.println(x);
-			System.out.println(y);
+		i++;
+		for(int j = 3; j<8; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-		x= -7;
+		x= -5;
 		y= -1;
-		for(int i = 2; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
-
+		i++;
+		for(int j = 2; j<8; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-		x= -7;
-		y= -3;
-		for(int i = 1; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
-
+		x= -5;
+		y= -3;		
+		i++;
+		for(int j = 1; j<8; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-		x= -5.5;
+		x= -3.5;
 		y= -4;
-		for(int i = 1; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
-
+		i++;
+		for(int j = 1; j<7; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-		x= -4;
+		x= -2;
 		y= -5;
-		for(int i = 1; i<8; i++, x+=1.5, y+=1){
-			drawHega(x, y);
-
+		i++;
+		for(int j = 1; j<6; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
 		}
 
-
-
-		// for(int i=0;i<state.length;i++)
-		// {
-		// 	toto = 0;
-		// 	x = -7;
-		// 	System.out.println(state.length -1);
-		// 	for (int space = state.length -1; space >= i; space--) {
-		// 		System.out.println(space);
-		// 		toto++;
-		// 	}
-		// 	System.out.println(toto);
-		// 	x = x + (1 * toto);
-
-		// 	for (int j=0;j<state[i].length;j++){
-		// 		y--;
-		// 		if(state[i][j] != '-'){
-
-		// 			StdDraw.setPenRadius(0.001);
-		// 			StdDraw.setPenColor(StdDraw.BLACK);
-		// 			StdDraw.circle(x, y, radiusCase);
-		// 			drawHega(x, y);
-
-		// 			switch(state[i][j]){
-		// 				case 'R': 
-		// 					StdDraw.setPenColor(StdDraw.RED);
-		// 					StdDraw.filledCircle(x, y, radiusPion);
-		// 					break;
-		// 				case 'B':
-		// 					StdDraw.setPenColor(StdDraw.BLUE);
-		// 					StdDraw.filledCircle(x, y, radiusPion);
-		// 					break;
-		// 				case '.': 
-		// 					StdDraw.setPenColor(StdDraw.WHITE);
-		// 					StdDraw.filledCircle(x, y, radiusPion);
-		// 					break;
-		// 			}
-
-		// 			StdDraw.setPenRadius(0.01);
-		// 			StdDraw.setPenColor(StdDraw.GREEN);
-		// 			StdDraw.point(x, y);
-
-		// 		}
-		// 	}
-		// }
+		x= -0.5;
+		y= -6;
+		i++;
+		for(int j = 1; j<5; j++, x+=1.5, y+=1){
+			lc = ""+LISTLETTER[i]+LISTNUMBER[j];
+			drawPion(x, y, state[i][j]);
+			drawHega(x, y, lc);
+		}
 
         StdDraw.show();
 		
 	}
 
-	public static void drawHega(double x,double y) {
+	public static void drawHega(double x,double y, String lc) {
 		StdDraw.setPenRadius(0.002);
 		for (int i = 0; i < 6; i++) {
 			StdDraw.line(x + Math.cos(i*ANGLE_STEP)
@@ -378,34 +427,61 @@ public class StuckWin {
 						,y + Math.sin((i+1) * ANGLE_STEP));
 		}
 		StdDraw.setPenRadius(0.001);
+		// StdDraw.text(x, y, lc);
+	}
+
+	public static void drawPion(double x,double y, char value){
+		switch(value){
+			case 'R': 
+				// StdDraw.setPenColor(StdDraw.RED);
+				// StdDraw.filledCircle(x, y, radiusPion);
+				// StdDraw.setPenColor(StdDraw.BLACK);
+				StdDraw.picture(x, y, "pionR.png",1.5,1.5);
+
+				break;
+			case 'B':
+				// StdDraw.setPenColor(StdDraw.BLUE);
+				// StdDraw.filledCircle(x, y, radiusPion);
+				// StdDraw.setPenColor(StdDraw.BLACK);
+
+				StdDraw.picture(x, y, "pionB.png",1.5,1.5);
+				break;
+
+		}
+	}
+
+	public static void drawError(String error){
+		StdDraw.text(0, 9, error);
 	}
 
 	void affiche() {
+		// Affiche l'interface graphique 
 		graphiqueAffiche();
-		// Déclaration des variable pour parcourire le tableau
-		int column, line, diag, space;
+
+		// Initialisation des variable pour parcourire le tableau
+		int i, j, k, space;
+
+		// Initialisation des variable pour stocker le numéro et la lettre de la case.
         char letterCase,numberCase;
 
-		// Parcours des colonne de la moitier droite du tableau
-		for(column = 0; column < state.length; column++){
+		// Parcours les lignes du tableau en partant du haut
+		for(i = 0; i < state.length; i++){
 
 			// Ajout d'espace pour la partie haute du losange
-			for (space = state.length -1; space >= column; space--) {
+			for (space = state.length -1; space >= i; space--) {
 				System.out.print("  ");
 			}
 			
-			// Parcours des diagonale du haut à droite vers le centre
-			for (line = 0, diag = state.length - column; line < 1 + column; line++, diag++){
+			// Parcours des diagonale du haut à droite vers la diagonale centrale
+			for (j = 0, k = state.length - i; j < 1 + i; j++, k++){
 				
 				// Nomination & Numeration des cases 
-				letterCase = LISTLETTER[line];
-				numberCase = LISTNUMBER[diag];
+				letterCase = LISTLETTER[j];
+				numberCase = LISTNUMBER[k];
 
-				/**  Numeration des colonnes de 0->7 pour 0->7 (nombre colonne dans le tableau) 
-				* + Affichage des case (Fond-couleur + Nomination ligne + numeration colon + Reset style)
-				* VERIFIER AFFICHAGE AVEC joueurs[0] pour B
-				*/
-				switch(state[line][diag]){
+				// Affichage de la couleur de la case du tableau state au rang [j][k] en fonction de ca valeur 
+				// + Nomination des case letterCase + NumberCase. exemple => B2
+				switch(state[j][k]){
 					case VIDE: System.out.print(ConsoleColors.WHITE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
 					case 'R': System.out.print(ConsoleColors.RED_BACKGROUND + letterCase + numberCase+ ConsoleColors.RESET);;break;
 					case 'B': System.out.print(ConsoleColors.BLUE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
@@ -418,27 +494,34 @@ public class StuckWin {
 			System.out.println();	
 		}		
 
-		// Parcours des colonne de la moitier gauche du tableau
-		for(column = 0; column < state.length -1; column++){
+		// Parcours les lignes du tableau en partant du haut
+		for(i = 0; i < state.length -1; i++){
 			
 			// Ajout d'espace pour la partie basse du losange
-			for (space = 0; space-1 <= column; space++){
+			for (space = 0; space-1 <= i; space++){
 				System.out.print("  ");
 			}
-			// Parcours des diagonale du milieu vers le bas à gauche du tableau
-			for (line = 1 + column , diag = 1; diag < state.length - column; line++, diag++){
-				
-				letterCase = LISTLETTER[line];
-				numberCase = LISTNUMBER[diag];
 
-				switch(state[line][diag]){
+			// Parcours des diagonale de la diagonale centrale jusqu'à en bas à droite
+			for (j = 1 + i , k = 1; k < state.length - i; j++, k++){
+				
+				// Nomination & Numeration des cases 
+				letterCase = LISTLETTER[j];
+				numberCase = LISTNUMBER[k];
+
+				// Affichage de la couleur de la case du tableau state au rang [j][k] en fonction de ca valeur 
+				// + Nomination des case letterCase + NumberCase. exemple => B2
+				switch(state[j][k]){
 					case VIDE: System.out.print(ConsoleColors.WHITE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
 					case 'R': System.out.print(ConsoleColors.RED_BACKGROUND + letterCase + numberCase+ ConsoleColors.RESET);;break;
 					case 'B': System.out.print(ConsoleColors.BLUE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
 					case '-': System.out.print("  ");
 				}
+
+				// Ajout des espaces entre les cases
 				System.out.print("  ");
 			}
+			// Retour ligne affichange du plateau
 			System.out.println();
 		}
 	}
@@ -455,7 +538,7 @@ public class StuckWin {
 		String src = "";
 		String dest = "";
 
-
+		// Integer.parseInt(1) == 1
 			// String[] a = new String[2];
 			// for(int i=0; i < state.length;i++){
 			// 	for(int j=0; j < state[i].length;j++){
@@ -621,7 +704,7 @@ public class StuckWin {
 			}
 
 			if(ScL1 > maxScL1){
-				System.out.println(RED_BACKGROUND+move[1]+RESET);
+				System.out.println(ConsoleColors.RED_BACKGROUND+move[1]+ConsoleColors.RESET);
 				move[1] = ""+LISTLETTER[x1]+LISTNUMBER[y1];
 			}
 			ScL1=0;
@@ -632,9 +715,6 @@ public class StuckWin {
 		return move;
 	}
 
-
-
-
 	public String bestCase(){
 
 		return "az";
@@ -644,7 +724,6 @@ public class StuckWin {
 
 		return "AZ";
 	}
-
 
 	public int AddSc(int ScL, char couleur, int x, int y, int coef){
 		if(couleur == joueurs[0]){
@@ -669,6 +748,44 @@ public class StuckWin {
 		return ScL;
 	}
 
+	public static void printGame(){
+		File file = new File("StuckWin_00.csv");
+
+        if (!file.exists()){
+			try{
+				file.createNewFile();
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+
+		try(BufferedWriter bufferedWriter = new BufferedWriter( new FileWriter(file))){
+			
+			bufferedWriter.write("StuckWin"+","+"1V1");
+			bufferedWriter.newLine();
+			bufferedWriter.write("Groupe 40 : , Berkrouber Benjamin , Taskin Semih");
+			bufferedWriter.newLine();
+			bufferedWriter.write("Joueur, Src, Dest, Etats");
+			bufferedWriter.newLine();
+			
+			for(int i=0; i <coup.size(); i++){
+				bufferedWriter.write(coup.get(i));
+				bufferedWriter.newLine();
+			}
+
+			bufferedWriter.write(win.get(0));
+
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void printError(String error){
+		StdDraw.text(0, -9, error);
+	}
+
+
+
 	/**
 	 * gère le jeu en fonction du joueur/couleur
 	 * 
@@ -685,6 +802,7 @@ public class StuckWin {
 				src = input.next();
 				dst = input.next();
 				System.out.println(src + "->" + dst);
+				coup.add(couleur+","+src+","+dst);
 				break;
 			case 'R':
 				System.out.println("Mouvement " + couleur);
@@ -692,6 +810,7 @@ public class StuckWin {
 				src = mvtIa[0];
 				dst = mvtIa[1];
 				System.out.println(src + "->" + dst);
+				coup.add(couleur+","+src+","+dst);
 				break;
 		}
 		return new String[] { src, dst };
@@ -701,17 +820,31 @@ public class StuckWin {
 	 * retourne 'R' ou 'B' si vainqueur, 'N' si partie pas finie
 	 * 
 	 * @param couleur
-	 * @return
+	 * @return 
 	 */
 	char finPartie(char couleur) {
 		
+		// Parcours le tableau par ligne
 		for(int i=0; i<state.length;i++){
+
+			// Parcours le tableau par column
 			for(int j=0;j<state[i].length;j++){
+
+				// Verifique si la case à la même valeur que la variable couleur 'R' OU 'B'
 				if(state[i][j] == couleur){
+
+					//Nomination et numération de la case src
 					String src = ""+LISTLETTER[i]+LISTNUMBER[j];
+
+					// Cherche les destination possible de cette case
 					String[] possibleDests = possibleDests(couleur, i, j);
+
+					// Parcours le tableau de possiblité de déplacement
 					for(int k=0; k < possibleDests.length;k++){
+
+						// Vérifie si l'un des déplacement est possible
 						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK){
+							// Si on déplacement et possible return 'N' => partie non fini.
 							return 'N';
 						}
 					}
@@ -719,6 +852,7 @@ public class StuckWin {
 			}
 		}
 
+		// Renvoie la couleur du joueur ne pouvant plus faire de déplacement
 		return couleur;
 	}
 
@@ -757,5 +891,8 @@ public class StuckWin {
 		} while (partie == 'N'); // TODO affiche vainqueur
 		jeu.affiche();
 		System.out.printf("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
+		win.add("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
+		printGame();
+		System.out.println("Vous pouvez retrouver votre partie le fichier test.txt");
 	}
 }
