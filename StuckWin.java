@@ -1,7 +1,16 @@
+/**
+ * IUT Nord Franche-Comté BUT informatique S1
+ * Année Universitaire 2022-2023
+ * SAE S1.01 / Groupe 40 
+ * Berkrouber Benjamin [benjamin.berkrouber@edu.univ-fcomte.fr]
+ * Taskin Semih [semih.taskin@edu.univ-fcomte.fr]
+ */
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.stream.Collectors;
 import java.util.*;
 
 import javax.print.DocFlavor.STRING;
@@ -10,7 +19,7 @@ import javax.swing.SwingConstants;
 
 public class StuckWin {
 
-	// Permet de lire des donnée entrer par l'utilisateur
+	// Permets de lire des données entrer par l'utilisateur
 	static final Scanner input = new Scanner(System.in);
 
 	// 
@@ -20,14 +29,14 @@ public class StuckWin {
 	public static final char[] LISTLETTER = {'A','B','C','D','E','F','G'}; // egale à 7 (nombre de ligne state)
 	public static final char[] LISTNUMBER= {'0','1','2','3','4','5','6','7'}; // egale à 8 (nombre de colone de state)
 
-	// Initialisation de la taille des case et des pions de l'interface graphique
+	// Initialisation de la taille des cases et des pions de l'interface graphique
 	public static final double radiusCase = 1.5;
 	public static final double radiusPion = 1;
 
-	// Angle pour les hexagone dans l'interface graphique
+	// Angle pour les hexagones dans l'interface graphique
 	public static final double ANGLE_STEP = 2 * Math.PI / 6;
 
-	// Liste d'énumération des différente erreur possible
+	// Liste d'énumérations des différentes erreurs possibles
 	enum Result {
 		OK
 		, BAD_COLOR
@@ -39,7 +48,7 @@ public class StuckWin {
 		, BAD_SRC
 	}
 
-	// Liste d'énumération des différente mode de jeu possible
+	// Liste d'énumération des différents modes de jeu possible
 	enum ModeJeuPlay {
 		PlayervPayer
 		, PlayervIA
@@ -48,11 +57,11 @@ public class StuckWin {
 	}
 	ModeJeuPlay CurrentModePlay = ModeJeuPlay.PlayervPayer;
 
-	// Liste d'énumération des différente mode d'affichage possible
+	// Liste d'énumération des différents modes d'affichage possible
 	enum ModeJeuAffiche { Console,GUI }
 	ModeJeuAffiche CurrentModeAffiche = ModeJeuAffiche.Console;
 
-	// Liste d'énumération des différente mode de sauvegard possible
+	// Liste d'énumération des différents modes de sauvegarde possible
 	enum ModeJeuSave {YES,NO}
 	ModeJeuSave CurrentModeSave = ModeJeuSave.NO;
 
@@ -62,10 +71,10 @@ public class StuckWin {
 		, SIMU
 	}
 
-	// Tableau comportant le nombre de joueur et leur noms
+	// Tableau comportant le nombre de joueur et leurs noms
 	final char[] joueurs = { 'B', 'R' };
 
-	// Liste pour sauvegarder les coup jouer, leur etats et qui gagne
+	// Liste pour sauvegarder les coups joués, leur état et qui gagne
 	public static final List<String> coup = new ArrayList<>();
 	public static final List<String> etat = new ArrayList<>();
 	public static final List<String> win = new ArrayList<>();
@@ -87,7 +96,7 @@ public class StuckWin {
 		{ '-', 'B', 'B', 'B', 'B', '-', '-', '-' },
 	};	
 
-	// Liste pour sauvegarder les coordonnée des centre des case dans l'interface grahpique
+	// Liste pour sauvegarder les coordonnées des centres des cases dans l'interface grahpique
 	public static final List<Double> xCenterCaseGUi = new ArrayList<>();
 	public static final List<Double> yCenterCaseGUi = new ArrayList<>();
 	public static final List<String> caseGUI = new ArrayList<>();
@@ -107,10 +116,10 @@ public class StuckWin {
 
 		Result result = Result.OK;
 
-		// Tableau qui stock les case possiblement jouable
+		// Tableau qui stocke les cases possiblement jouables
 		String[] possibleDests = new String[3];
 
-		// Initialisation des valeur de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
+		// Initialisation des valeurs de la case de départ & d'arrivé : currentCase = R ; B ; - ; . 
 		char currentCase;
 		char destCase;
 
@@ -118,14 +127,14 @@ public class StuckWin {
 		int xSource=0, ySource=0;
 		int xDest=0, yDest=0;
 
-		// Vérification que le joueur entre 2 caractère et qu'il corresponde au élement des tableau
+		// Vérification que le joueur entre 2 caractères qu'il corresponde au élement des tableaux
 		if(lcSource.length() != 2 || lcDest.length() != 2)
 		{
 			result = Result.BAD_SRC;
 			return result;
 		}
 
-		// Vérifié que la case de départ et la case d'arrive existe dans le tableau (A1) et non (/^)
+		// Vérifié que la case de départ et la case d'arriver existent dans le tableau (A1) et non (/^)
 		if(!(issetlc(lcSource)) || !(issetlc(lcDest)))
 		{
 			result = Result.BAD_SRC;
@@ -155,14 +164,14 @@ public class StuckWin {
 			return result;
 		}
 
-		// Vérifie que la case d'arriver est dans les bordure
+		// Vérifie que la case d'arriver est dans les bordures
 		if(destCase == '-')
 		{
 			result = Result.EXT_BOARD;
 			return result;
 		}
 
-		// Vérifie que la case d'arriver n'est pas occuper
+		// Vérifie que la case d'arriver n'est pas occupée
 		if(destCase != VIDE)
 		{
 			result = Result.DEST_NOT_FREE; 
@@ -187,7 +196,7 @@ public class StuckWin {
 			state[xSource][ySource] = VIDE;
 		}
 		
-		// Renvoie OK si toute les vérification son passer
+		// Renvoie OK si toutes les vérifications son passé
 		result = Result.OK; return result;
 	}
 
@@ -283,7 +292,7 @@ public class StuckWin {
 					&& idCol-1 < LISTNUMBER.length && idCol-1 >= 1 ){
 						possibleDests[0] = ""+LISTLETTER[idLettre]+LISTNUMBER[idCol-1];
 				}else{
-					// Sinon revoie la case actuelle
+					// Sinon renvoie la case actuelle
 					possibleDests[0]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
 				}
 
@@ -292,7 +301,7 @@ public class StuckWin {
 					&& idCol-1 < LISTNUMBER.length && idCol-1 >= 1){
 						possibleDests[1] = ""+LISTLETTER[idLettre+1]+LISTNUMBER[idCol-1];
 				}else{
-					// Sinon revoie la case actuelle
+					// Sinon renvoie la case actuelle
 					possibleDests[1]= ""+LISTLETTER[idLettre]+LISTNUMBER[idCol];
 				}
 
@@ -344,6 +353,12 @@ public class StuckWin {
 	 */
 	void AfficheGUI(){
 		
+		int i;
+		double x= 0;
+		double y= 0;
+		String lc = "";
+
+
 		if(CurrentModePlay == ModeJeuPlay.PlayervPayer){
 			StdDraw.picture(-8, -5, "player.png", 4, 7);
 			StdDraw.picture(8, 5, "player2.png", 4, 7);
@@ -357,12 +372,6 @@ public class StuckWin {
 			StdDraw.picture(-8, -5, "ia1.png", 4, 7);
 			StdDraw.picture(8, 5, "ia2.png", 4, 7);
 		}
-
-
-		int i;
-		double x= 0;
-		double y= 0;
-		String lc = "";
 
 		x= -5;
 		y= 3;
@@ -466,15 +475,20 @@ public class StuckWin {
 	 * @param lc nom de la case (A1)
 	 */
 	void drawHega(double x,double y, String lc) {
+		// Défini la taille du crayon
 		StdDraw.setPenRadius(0.002);
+
+		// Dessine 6 ligne dans un cercle pour former un hexagone
 		for (int i = 0; i < 6; i++) {
 			StdDraw.line(x + Math.cos(i*ANGLE_STEP)
 						,y + Math.sin(i * ANGLE_STEP)
 						,x + Math.cos((i+1) * ANGLE_STEP)
 						,y + Math.sin((i+1) * ANGLE_STEP));
 		}
+
+		// Défini la taille du crayon
 		StdDraw.setPenRadius(0.001);
-		// StdDraw.text(x, y, lc);
+		//StdDraw.text(x, y, lc);
 	}
 
 	/**
@@ -486,12 +500,14 @@ public class StuckWin {
 	 * @param lc nom de la case (A1)
 	 */
 	void drawPion(double x,double y, char value){
+		// Choisis les action en fonction du joueur 
 		switch(value){
 			case 'B': 
 				// StdDraw.setPenColor(StdDraw.RED);
 				// StdDraw.filledCircle(x, y, radiusPion);
 				// StdDraw.setPenColor(StdDraw.BLACK);
 
+				// Choisis quel joueur joue
 				if(CurrentModePlay == ModeJeuPlay.IAvIA2){
 					StdDraw.picture(x, y, "pionIA.png",1.5,1.5);
 				} else {
@@ -504,6 +520,7 @@ public class StuckWin {
 				// StdDraw.filledCircle(x, y, radiusPion);
 				// StdDraw.setPenColor(StdDraw.BLACK);
 
+				// Choisis quel joueur joue
 				if(CurrentModePlay == ModeJeuPlay.PlayervPayer){
 					StdDraw.picture(x, y, "pionPlayer2.png",1.5,1.5);
 				}else if(CurrentModePlay == ModeJeuPlay.PlayervIA){
@@ -512,7 +529,6 @@ public class StuckWin {
 					StdDraw.picture(x, y, "pionIA2.png",1.5,1.5);
 				}
 				break;
-
 		}
 	}
 
@@ -520,10 +536,10 @@ public class StuckWin {
 	 * Affiche l'interface graphique
 	 */
 	void AfficheConsole(){
-		// Initialisation des variable pour parcourire le tableau
+		// Initialisation des variables pour parcourire le tableau
 		int i, j, k, space;
 
-		// Initialisation des variable pour stocker le numéro et la lettre de la case.
+		// Initialisation des variables pour stocker le numéro et la lettre de la case.
 		char letterCase,numberCase;
 
 		// Parcours les lignes du tableau en partant du haut
@@ -534,14 +550,14 @@ public class StuckWin {
 				System.out.print("  ");
 			}
 			
-			// Parcours des diagonale du haut à droite vers la diagonale centrale
+			// Parcours des diagonales du haut à droite vers la diagonale centrale
 			for (j = 0, k = state.length - i; j < 1 + i; j++, k++){
 				
 				// Nomination & Numeration des cases 
 				letterCase = LISTLETTER[j];
 				numberCase = LISTNUMBER[k];
 
-				// Affichage de la couleur de la case du tableau state au rang [j][k] en fonction de ca valeur 
+				// Affichage de la couleur de la case du tableau state au rang [j][k] en fonction de sa valeur 
 				// + Nomination des case letterCase + NumberCase. exemple => B2
 				switch(state[j][k]){
 					case VIDE: System.out.print(ConsoleColors.WHITE_BACKGROUND + letterCase + numberCase + ConsoleColors.RESET);break;
@@ -552,7 +568,7 @@ public class StuckWin {
 				// Ajout des espaces entre les cases
 				System.out.print("  ");
 			}
-			// Retour ligne affichange du plateau
+			// Retour ligne affichage du plateau
 			System.out.println();	
 		}		
 
@@ -564,7 +580,7 @@ public class StuckWin {
 				System.out.print("  ");
 			}
 
-			// Parcours des diagonale de la diagonale centrale jusqu'à en bas à droite
+			// Parcours des diagonales de la diagonale centrale jusqu'à en bas à droite
 			for (j = 1 + i , k = 1; k < state.length - i; j++, k++){
 				
 				// Nomination & Numeration des cases 
@@ -583,7 +599,7 @@ public class StuckWin {
 				// Ajout des espaces entre les cases
 				System.out.print("  ");
 			}
-			// Retour ligne affichange du plateau
+			// Retour ligne affichage du plateau
 			System.out.println();
 		}
 	}
@@ -602,37 +618,87 @@ public class StuckWin {
 	}
 
 	/**
-	 * Joue un tour
+	 * Joue un tour IA naive (NON FINI)
 	 * 
 	 * @param couleur couleur du pion à jouer
 	 * @return tableau contenant la position de départ et la destination du pion à
 	 *         jouer.
 	 */
 	String[] jouerIA(char couleur){
+
+		// Initialisation variable source 
 		String src = "";
-		String dest = "";
+		// Initialisation du tableau contenant le mouvement à faire
 		String[] move = new String[2];
 
-			for(int i=0; i < state.length;i++){
-				for(int j=0; j < state[i].length;j++){
-					if(state[i][j]== couleur){
-						src = ""+LISTLETTER[i]+LISTNUMBER[j];
-						String[] possibleDests = possibleDests(couleur, i, j);
-						for(int k=0; k<possibleDests.length;k++){
-							if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK){
-								move[0]=src;
-								move[1]=possibleDests[k];
-								return move;
-							}
+		// Initialisation de la liste des case que on peux bouger
+		List<String> listCase = new ArrayList<>();
+		// Initalisation de la liste que cette case peux faire
+		List<String> listMove = new ArrayList<>();
+
+		// Initialisation des index des case dans les liste
+		int indexCase=0;
+		int indexMove=0;
+
+		// Parcours du tableau en ligne
+		for(int i=0; i < state.length;i++){
+			// Parcours du tableau en column
+			for(int j=0; j < state[i].length;j++){
+				// Recherche les case qui corresponde à la couleur du joueur
+				if(state[i][j]== couleur){
+					// Prends comme valeur le nom de la case (A1)
+					src = ""+LISTLETTER[i]+LISTNUMBER[j];
+					// Recherche les déplacement possible de cette case
+					String[] possibleDests = possibleDests(couleur, i, j);
+
+					// Parcours le tableau des déplacement possible
+					for(int k=0; k<possibleDests.length;k++){
+						// Vérifie si le déplacement est possbile
+						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK){
+							// ajouter le nom de la case source à la liste des case source
+							listCase.add(src);
 						}
 					}
 				}
 			}
-		return move;
+		}
+
+		// Initialise une liste des case que on peux déplacer en suprrimant les doublons 
+		List<String> listCaseVerif = listCase.stream().distinct().collect(Collectors.toList());
+		// Prends une valeur au hasard dans la liste des case que on peux bouger
+		indexCase = (int)(Math.random()*listCaseVerif.size());
+
+		// Stock dans le tableau du déplacement à faire le nom de la case source
+		move[0] = listCaseVerif.get(indexCase);
+
+		// Donne les coordonnée de cette case
+		int i = setCo('L', move[0].charAt(0));
+		int j = setCo('N', move[0].charAt(1));
+
+		// Recherche les déplacement possible pour cette case 
+		String[] possibleDests = possibleDests(couleur, i, j);
+
+		// Parcours le tableau des déplacement possible
+		for(int k=0; k<possibleDests.length;k++){
+			// Vérifie si le déplacement est possible
+			if(deplace(couleur, move[0], possibleDests[k], ModeMvt.SIMU) == Result.OK){
+				// Ajoute le déplacement à la liste des déplacement possible
+				listMove.add(possibleDests[k]);
+			}
+		}
+		
+		// Prends uen valeur au hards dans la liste des movement possible
+		indexMove = (int)(Math.random() * listMove.size());
+
+		// Stock dans le tableau du déplacement à faire le nom de la case de destination
+		move[1] = listMove.get(indexMove);
+
+	return move;
+
 	}
 
 	/**
-	 * Joue un tour
+	 * Joue un tour IA intélligente (NON FINI)
 	 * 
 	 * @param couleur couleur du pion à jouer
 	 * @return tableau contenant la position de départ et la destination du pion à
@@ -640,8 +706,6 @@ public class StuckWin {
 	 */
 	String[] jouerIA2(char couleur) {
 		
-		String src = "";
-		String dest = "";
 		String[] move = new String[2];
 
 			int maxScL1=0, xSaveL1=0, ySaveL1=0;
@@ -683,7 +747,7 @@ public class StuckWin {
 								x1= setCo('L', destL1[possL1].charAt(0));
 								y1= setCo('N', destL1[possL1].charAt(1));
 
-								ScL1 = AddSc(ScL1, couleur, x1, y1,1);
+								ScL1 = addSc(ScL1, couleur, x1, y1,1);
 								
 								String srcL1 = ""+LISTLETTER[x1]+LISTNUMBER[y1];
 								// System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = ["+x1+"-"+y1+"]");
@@ -695,7 +759,7 @@ public class StuckWin {
 									if(issetlc(srcL1) && srcL1 != (destL2[possL2])){
 										x2= setCo('L', destL2[possL2].charAt(0));
 										y2= setCo('N', destL2[possL2].charAt(1));
-										ScL2 = AddSc(ScL2, couleur, x2, y2,1);
+										ScL2 = addSc(ScL2, couleur, x2, y2,1);
 										String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
 										
 										// System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = ["+x2+"-"+y2+"]");							
@@ -707,7 +771,7 @@ public class StuckWin {
 											if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
 												x3= setCo('L', destL3[possL3].charAt(0));
 												y3= setCo('N', destL3[possL3].charAt(1));
-												ScL3 = AddSc(ScL3, couleur, x3, y3,1);
+												ScL3 = addSc(ScL3, couleur, x3, y3,1);
 												String srcL3 = ""+LISTLETTER[x3]+LISTNUMBER[y3];
 
 												// System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = ["+x3+"-"+y3+"]");
@@ -753,7 +817,7 @@ public class StuckWin {
 
 					// System.out.println(x1+"-"+y1);
 
-					ScL1 = AddSc(ScL1, couleur, x1, y1,1);
+					ScL1 = addSc(ScL1, couleur, x1, y1,1);
 					String srcL1 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
 					String[] destL2 = possibleDests(couleur,x1, y1);							
 
@@ -762,7 +826,7 @@ public class StuckWin {
 							x2= setCo('L', destL2[possL2].charAt(0));
 							y2= setCo('N', destL2[possL2].charAt(1));
 
-							ScL2 = AddSc(ScL2, couleur, x2, y2,1);
+							ScL2 = addSc(ScL2, couleur, x2, y2,1);
 							String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
 							String[] destL3 = possibleDests(couleur,x2, y2);
 							
@@ -771,7 +835,7 @@ public class StuckWin {
 									x3= setCo('L', destL3[possL3].charAt(0));
 									y3= setCo('N', destL3[possL3].charAt(1));
 			
-									ScL3 = AddSc(ScL2, couleur, x2, y2,1);
+									ScL3 = addSc(ScL2, couleur, x2, y2,1);
 								}
 							}
 							ScL2+=ScL3;
@@ -795,27 +859,75 @@ public class StuckWin {
 	}
 
 	/**
-	 * Cherche la meilleur case à jouer
+	 * Cherche la meilleur case à jouer pour le joueur
 	 * 
-	 * @return la meilleur case à jouer.
+	 * @param couleur la couleur actuelle du joueur
+	 * @return la meilleur case à jouer pour le joueur.
 	 */
-	String bestCase(){
+	String bestCase(char couleur){
 
-		return "az";
+		String src;
+		String srcSave="A1";
+		int scCase=0;
+		int scCaseSave=0;
+
+		for(int i=0;i<state.length;i++){
+			for(int j=0;j<state[i].length;j++){
+				if(state[i][j]==couleur){
+					src = ""+LISTLETTER[i]+LISTNUMBER[j];
+					scCase = AttribSc(src, couleur, 0, 5);
+					if(scCase < scCaseSave ){
+						srcSave = src;
+						scCase = scCaseSave;
+					}
+				}
+			}
+		}
+		return srcSave;
+	}
+
+	public int AttribSc(String caseName, char couleur, int Sc, int index){
+		index--;
+		if(index > 0){
+			int x= setCo('L', caseName.charAt(0));
+			int y= setCo('N', caseName.charAt(1));
+			
+			Sc += addSc2(couleur,x,y,1);
+	
+			String[] possibleDest = possibleDests(couleur, x, y);
+			for(int i=0;i<possibleDest.length;i++){
+				if(issetlc(caseName) && caseName != (possibleDest[i])){
+					AttribSc(possibleDest[i], couleur, Sc, index);
+				}
+			}
+		}
+		return Sc;
+	}
+
+	public double addSc2(char couleur, int x, int y, int coef){
+		int ScL=0;
+		if(couleur == joueurs[0]){
+			switch(state[x][y]){
+				case 'R': ScL +=5*coef; break;
+				case 'B': ScL +=10*coef; break;
+				case '.': ScL +=1*coef; break;
+				case '-': ScL +=5*coef; break;
+				default: ScL +=0; 
+			}
+		}else if(couleur == joueurs[1]){
+			switch(state[x][y]){
+				case 'R': ScL +=10*coef; break;
+				case 'B': ScL +=5*coef; break;
+				case '.': ScL +=1*coef; break;
+				case '-': ScL +=5*coef; break;
+				default: ScL +=0; 
+			}
+		}
+		return ScL;
 	}
 
 	/**
-	 * Cherche le meilleur coup à jouer
-	 * 
-	 * @param src case de départ
-	 * @return le meilleur coup à jouer.
-	 */
-	String bestMove(String src){
-		return "AZ";
-	}
-
-	/**
-	 * Attribue un score à la case
+	 * Attribue un score à la case (NON FINI)
 	 * 
 	 * @param ScL score actuelle de la ligne
 	 * @param couleur couleur du pion à jouer
@@ -825,7 +937,7 @@ public class StuckWin {
 	 * 
 	 * @return ScL nouveau score de la case
 	 */
-	public int AddSc(int ScL, char couleur, int x, int y, int coef){
+	public int addSc(int ScL, char couleur, int x, int y, int coef){
 		if(couleur == joueurs[0]){
 			switch(state[x][y]){
 				case 'R': ScL +=5*coef; break;
@@ -851,21 +963,28 @@ public class StuckWin {
 	 * Ecrit le résumer de la partie dans un fichier CSV
 	 */
 	public static void printGame(){
-		int ctp =0;
+
+		// Crée le nom du fichier trace de partie
+		int numDoc =0;
 		File file;
+
+		// Recherche le dernier nom de fichier pour crée le suivant
 		do{
-			file = new File("StuckWin_"+ ctp++ +".csv");
+			file = new File("StuckWin_"+ numDoc++ +".csv");
 		}while(file.exists());
 
 
+		// Crée le fichier trace de partie
 		try{
 			file.createNewFile();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 
+		// Ecrit le résumer de la partie dans le fichier trace
 		try(BufferedWriter bufferedWriter = new BufferedWriter( new FileWriter(file))){
 			
+			// Ecrit les paramètre 
 			bufferedWriter.write("StuckWin"+","+"1V1");
 			bufferedWriter.newLine();
 			bufferedWriter.write("Groupe 40 : , Berkrouber Benjamin , Taskin Semih");
@@ -873,11 +992,13 @@ public class StuckWin {
 			bufferedWriter.write("Joueur, Src, Dest, Etats");
 			bufferedWriter.newLine();
 			
+			// Ecrit les coup ainsi que leur statue dans le fichier trace
 			for(int i=0; i <coup.size(); i++){
 				bufferedWriter.write(coup.get(i));
 				bufferedWriter.newLine();
 			}
 
+			// Ecrit le gagnant de la partie 
 			bufferedWriter.write(win.get(0));
 
 		} catch(IOException e){
@@ -888,27 +1009,33 @@ public class StuckWin {
 	/**
 	 * Cherche le nom de la case en fonction de l'endroit cliquer
 	 * 
-	 * @return le nom de la case.
+	 * @return case le nom de la case.
 	 */
 	String AttribPion(){
 
-		String move = "NO";
+		// Initialise le nom de la case à NO
+		String caseClick = "NO";
 		
-		double xSc=0;
-		double ySc=0;		
+		// Initialisation des x et y
+		double x=0;
+		double y=0;		
 
+		// Recherche le x et y de l'endroit cliquer
 		while(!StdDraw.isMousePressed()){
-			xSc = StdDraw.mouseX();
-			ySc = StdDraw.mouseY();
+			x = StdDraw.mouseX();
+			y = StdDraw.mouseY();
 		}
 
+		//Nomme la case cliquer
 		for(int i = 0; i<caseGUI.size();i++){
-			if(xSc < xCenterCaseGUi.get(i)+radiusPion && xSc > xCenterCaseGUi.get(i)-radiusPion
-				&& ySc < yCenterCaseGUi.get(i)+radiusPion && ySc > yCenterCaseGUi.get(i)-radiusPion){
-					move = caseGUI.get(i);
+			if(x < xCenterCaseGUi.get(i)+radiusPion && x > xCenterCaseGUi.get(i)-radiusPion
+				&& y < yCenterCaseGUi.get(i)+radiusPion && y > yCenterCaseGUi.get(i)-radiusPion){
+					caseClick = caseGUI.get(i);
 			}
 		}
-		return move;
+
+		// Renvoie la case cliquer
+		return caseClick;
 	}
 
 	/**
@@ -947,7 +1074,7 @@ public class StuckWin {
 
 
 	/**
-	 * Dessine les case de déplacement possible
+	 * Dessine les cases de déplacements possibles
 	 * 
 	 * @param Case la case d'entrée
 	 * @param couleur la couleur du pion à jouer
@@ -966,36 +1093,18 @@ public class StuckWin {
 				int yDest = setCo('N', possibleDest[i].charAt(1));
 				
 				if(state[xDest][yDest] == VIDE){
-					System.out.println(possibleDest[i]);
 				
 					int a = caseGUI.indexOf(possibleDest[i]);
 	
 					double x1 = xCenterCaseGUi.get(a); 
 					double y1 = yCenterCaseGUi.get(a); 
-	
-					System.out.println(possibleDest[i]+" = "+a+" | x= "+x1+" y= "+y1);
-	
+		
 					StdDraw.setPenColor(StdDraw.RED);
 					StdDraw.filledCircle(x1, y1, (radiusPion/1.5));
 					StdDraw.setPenColor(StdDraw.BLACK);
 				}
 			}
 		}
-	}
-
-	/**
-	 * Cherche les coordonée de l'endroit cliquer
-	 * 
-	 * @return tableau de coordonée de l'endroit ou l'ont clique.
-	 */
-	Double[] moussPress(){
-		double x=0;
-		double y=0;
-		while(!StdDraw.isMousePressed()){
-			x = StdDraw.mouseX();
-			y = StdDraw.mouseY();
-		}
-		return new Double[] { x, y };
 	}
 
 	/**
@@ -1181,15 +1290,15 @@ public class StuckWin {
 					//Nomination et numération de la case src
 					String src = ""+LISTLETTER[i]+LISTNUMBER[j];
 
-					// Cherche les destination possible de cette case
+					// Cherche les destinations possibles de cette case
 					String[] possibleDests = possibleDests(couleur, i, j);
 
-					// Parcours le tableau de possiblité de déplacement
+					// Parcours le tableau de possibilité de déplacement
 					for(int k=0; k < possibleDests.length;k++){
 
 						// Vérifie si l'un des déplacement est possible
 						if(deplace(couleur, src, possibleDests[k], ModeMvt.SIMU) == Result.OK){
-							// Si on déplacement et possible return 'N' => partie non fini.
+							// Si un déplacement est possible return 'N' => partie non fini.
 							return 'N';
 						}
 					}
@@ -1202,7 +1311,7 @@ public class StuckWin {
 	}
 
 	/**
-	 * Affiche les différent mode de jeu
+	 * Affiche les différents modes de jeu
 	 */
 	public static void printHelpGame(){
 		System.out.println();
@@ -1220,13 +1329,14 @@ public class StuckWin {
 		StuckWin jeu = new StuckWin();
 
 		printHelpGame();
+		
 		System.out.println("Séléctionner un mode de jeu: ");
 		int ModeJeuPlayValue = input.nextInt();
 
-		System.out.println("Séléctionner un mode d'affichange :");
+		System.out.println("Séléctionner un mode d'affichage :");
 		int ModeJeuAfficheValue = input.nextInt();
 
-		System.out.println("Voulez vous sauvegarder la partie ?");
+		System.out.println("Voulez-vous sauvegarder la partie .");
 		int ModeJeuSaveValue = input.nextInt();
 
 		switch(ModeJeuPlayValue){
@@ -1298,8 +1408,8 @@ public class StuckWin {
 		
 		if(jeu.CurrentModeSave == ModeJeuSave.YES){
 			win.add("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
-			printGame();
-			System.out.println("Vous pouvez retrouver le résumer de votre partie le fichier : " );
+			printGame(); 
+			System.out.println("Vous pouvez retrouver le récapitulatif de votre partie le fichier : " );
 		}
 	}
 }
