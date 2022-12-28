@@ -697,163 +697,15 @@ public class StuckWin {
 
 	}
 
-	/**
-	 * Joue un tour IA intélligente (NON FINI)
-	 * 
-	 * @param couleur couleur du pion à jouer
-	 * @return tableau contenant la position de départ et la destination du pion à
-	 *         jouer.
-	 */
-	String[] jouerIA2(char couleur) {
-		
+	String[] jouerIA2(char couleur){
 		String[] move = new String[2];
 
-			int maxScL1=0, xSaveL1=0, ySaveL1=0;
-			int maxScL0=0, xSaveL0=0, ySaveL0=0;
+		move[0] = bestSrc(couleur);
+		move[1] = "A1";
+		// move[1] = bestDst(move[0], couleur);
 
-			int x1=0,y1=0;
-			int x2=0,y2=0;
-			int x3=0,y3=0;
-			int x4=0,y4=0;
-			int x5=0,y5=0;
-
-			int ScL0=0;
-			int ScL1=0;
-			int ScL2=0;
-			int ScL3=0;
-			int ScL4=0;
-			int ScL5=0;
-			int ScL6=0;
-
-			int[] ScL1Tab = new int[2];
-
-			// Trouver case L0
-			for(int x0=0; x0 < state.length;x0++){
-				for(int y0=0; y0 < state[x0].length;y0++){
-					if(state[x0][y0]== couleur){
-						String srcL0 = ""+LISTLETTER[x0]+LISTNUMBER[y0];
-
-						// System.out.println("");
-						// System.out.println("");
-						// System.out.println(WHITE_BACKGROUND+srcL0+RESET+" CaseValue = "+state[x0][y0]+" CaseCoo = "+x0+"-"+y0);
-
-						// Trouver case L1
-						String[] destL1 = possibleDests(couleur, x0, y0);
-						ScL1+=ScL2;
-						
-						for(int possL1=0; possL1<destL1.length;possL1++){
-							if(deplace(couleur, srcL0, destL1[possL1], ModeMvt.SIMU) == Result.OK){
-
-								x1= setCo('L', destL1[possL1].charAt(0));
-								y1= setCo('N', destL1[possL1].charAt(1));
-
-								ScL1 = addSc(ScL1, couleur, x1, y1,1);
-								
-								String srcL1 = ""+LISTLETTER[x1]+LISTNUMBER[y1];
-								// System.out.println("  |"+BLUE_BACKGROUND+srcL1+RESET+" CaseValue = "+state[x1][x2]+" CaseCoo = ["+x1+"-"+y1+"]");
-
-								// Trouver case L2
-								String[] destL2 = possibleDests(couleur,x1, y1);							
-								ScL2+=ScL3;
-								for(int possL2=0; possL2<destL2.length;possL2++){
-									if(issetlc(srcL1) && srcL1 != (destL2[possL2])){
-										x2= setCo('L', destL2[possL2].charAt(0));
-										y2= setCo('N', destL2[possL2].charAt(1));
-										ScL2 = addSc(ScL2, couleur, x2, y2,1);
-										String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
-										
-										// System.out.println("      |"+BLACK_BACKGROUND+srcL2+RESET+" CaseValue = "+state[x2][y2]+" CaseCoo = ["+x2+"-"+y2+"]");							
-
-										// Trouve case L3
-										String[] destL3 = possibleDests(couleur, x2, y2);
-										ScL3+=ScL4;
-										for(int possL3=0;possL3<destL3.length;possL3++){
-											if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
-												x3= setCo('L', destL3[possL3].charAt(0));
-												y3= setCo('N', destL3[possL3].charAt(1));
-												ScL3 = addSc(ScL3, couleur, x3, y3,1);
-												String srcL3 = ""+LISTLETTER[x3]+LISTNUMBER[y3];
-
-												// System.out.println("         |"+RED_BACKGROUND+srcL3+RESET+" CaseValue = "+state[x3][y3]+" CaseCoo = ["+x3+"-"+y3+"]");
-
-											}
-										}
-										ScL2+=ScL3;
-										// System.out.println("         |"+RED_BACKGROUND+"Valeur L3 = "+ScL3+RESET);
-										ScL3=0;
-									}
-								}
-								ScL1+=ScL2;
-								// System.out.println("      |"+BLACK_BACKGROUND+"Valeur L2 = "+ScL2+RESET);
-								ScL2=0;
-							}
-						}
-						ScL0+=ScL1;
-						// System.out.println("  |"+BLUE_BACKGROUND+"Valeur L1 = "+ScL1+RESET);
-						ScL1=0;
-
-						if(ScL0 > maxScL0){
-							move[0] = ""+LISTLETTER[x0]+LISTNUMBER[y0];
-							xSaveL0 = x0;
-							ySaveL0 = y0;
-							maxScL0 = ScL0;
-						}
-
-						// System.out.println(WHITE_BACKGROUND+"Valeur L0 = "+ScL0+RESET);
-						ScL0=0;
-					}
-				}
-			}
-
-			// System.out.println("meilleur case : "+move[0]);
-
-			String[] destL1 = possibleDests(couleur, xSaveL0, ySaveL0);
-
-			for(int possL1=0; possL1<destL1.length;possL1++){
-				if(deplace(couleur, move[0], destL1[possL1], ModeMvt.SIMU) == Result.OK){
-
-					x1= setCo('L', destL1[possL1].charAt(0));
-					y1= setCo('N', destL1[possL1].charAt(1));
-
-					// System.out.println(x1+"-"+y1);
-
-					ScL1 = addSc(ScL1, couleur, x1, y1,1);
-					String srcL1 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
-					String[] destL2 = possibleDests(couleur,x1, y1);							
-
-					for(int possL2=0; possL2<destL2.length;possL2++){
-						if(issetlc(srcL1) && srcL1 != (destL2[possL2])){
-							x2= setCo('L', destL2[possL2].charAt(0));
-							y2= setCo('N', destL2[possL2].charAt(1));
-
-							ScL2 = addSc(ScL2, couleur, x2, y2,1);
-							String srcL2 = ""+LISTLETTER[x2]+LISTNUMBER[y2];
-							String[] destL3 = possibleDests(couleur,x2, y2);
-							
-							for(int possL3=0; possL3<destL3.length;possL3++){
-								if(issetlc(srcL2) && srcL2 != (destL3[possL3])){
-									x3= setCo('L', destL3[possL3].charAt(0));
-									y3= setCo('N', destL3[possL3].charAt(1));
-			
-									ScL3 = addSc(ScL2, couleur, x2, y2,1);
-								}
-							}
-							ScL2+=ScL3;
-							ScL3=0;
-						}
-					}
-					ScL1+=ScL2;
-					ScL2=0;
-				}
-
-				if(ScL1 > maxScL1){
-					// System.out.println(ConsoleColors.RED_BACKGROUND+move[1]+ConsoleColors.RESET);
-					move[1] = ""+LISTLETTER[x1]+LISTNUMBER[y1];
-				}
-				ScL1=0;
-			}
-
-			// System.out.println(move[0]+" =>"+move[1]);
+		System.out.println(move[0]);
+		System.out.println(move[1]);
 
 		return move;
 	}
@@ -864,9 +716,9 @@ public class StuckWin {
 	 * @param couleur la couleur actuelle du joueur
 	 * @return la meilleur case à jouer pour le joueur.
 	 */
-	String bestCase(char couleur){
-
+	String bestSrc(char couleur){
 		String src;
+		int index=0;
 		String srcSave="A1";
 		int scCase=0;
 		int scCaseSave=0;
@@ -874,11 +726,20 @@ public class StuckWin {
 		for(int i=0;i<state.length;i++){
 			for(int j=0;j<state[i].length;j++){
 				if(state[i][j]==couleur){
-					src = ""+LISTLETTER[i]+LISTNUMBER[j];
-					scCase = AttribSc(src, couleur, 0, 5);
-					if(scCase < scCaseSave ){
+					src = ""+LISTLETTER[i]+LISTNUMBER[j];					
+					String[] possibleDst = possibleDests(couleur, i, j);
+					
+					if(deplace(couleur, src, possibleDst[0], ModeMvt.SIMU) == Result.OK 
+						|| deplace(couleur, src, possibleDst[1], ModeMvt.SIMU) == Result.OK 
+						|| deplace(couleur, src, possibleDst[2], ModeMvt.SIMU) == Result.OK){
+							System.out.println(src);
+							System.out.println(ConsoleColors.RED+"entrer index "+index+ConsoleColors.RESET);
+							scCase = AttribSc(src, couleur, 0, index);
+					}
+
+					if(scCase > scCaseSave ){
 						srcSave = src;
-						scCase = scCaseSave;
+						scCaseSave = scCase;
 					}
 				}
 			}
@@ -886,44 +747,59 @@ public class StuckWin {
 		return srcSave;
 	}
 
-	public int AttribSc(String caseName, char couleur, int Sc, int index){
-		index--;
-		if(index > 0){
-			int x= setCo('L', caseName.charAt(0));
-			int y= setCo('N', caseName.charAt(1));
-			
-			Sc += addSc2(couleur,x,y,1);
-	
-			String[] possibleDest = possibleDests(couleur, x, y);
-			for(int i=0;i<possibleDest.length;i++){
-				if(issetlc(caseName) && caseName != (possibleDest[i])){
-					AttribSc(possibleDest[i], couleur, Sc, index);
+	String bestDst(String src, char couleur){
+		String dst;
+		String dstSave="A1";
+		int scDst=0;
+		int scDstSave=0;
+
+		int x= setCo('L', src.charAt(0));
+		int y= setCo('N', src.charAt(1));
+
+		String[] possibleDest = possibleDests(couleur, x, y);
+		for(int i=0;i<possibleDest.length;i++){
+			// System.out.println("déplacement possible : "+possibleDest[i]);
+			if(deplace(couleur, src, possibleDest[i], ModeMvt.SIMU) == Result.OK){
+				dst = possibleDest[i];
+				scDst = AttribSc(dst, couleur, 0, 1);
+				
+				if(scDst > scDstSave){
+					scDstSave = scDst; 
+					dstSave = dst;
 				}
 			}
 		}
-		return Sc;
+		return dstSave;
 	}
 
-	public double addSc2(char couleur, int x, int y, int coef){
-		int ScL=0;
-		if(couleur == joueurs[0]){
-			switch(state[x][y]){
-				case 'R': ScL +=5*coef; break;
-				case 'B': ScL +=10*coef; break;
-				case '.': ScL +=1*coef; break;
-				case '-': ScL +=5*coef; break;
-				default: ScL +=0; 
-			}
-		}else if(couleur == joueurs[1]){
-			switch(state[x][y]){
-				case 'R': ScL +=10*coef; break;
-				case 'B': ScL +=5*coef; break;
-				case '.': ScL +=1*coef; break;
-				case '-': ScL +=5*coef; break;
-				default: ScL +=0; 
+
+	public int AttribSc(String caseName, char couleur, int Sc, int index){
+		int x= setCo('L', caseName.charAt(0));
+		int y= setCo('N', caseName.charAt(1));
+		
+		String[] possibleDest = possibleDests(couleur, x, y);
+		String[] possibleDestVerif = new String[3];
+
+		// A3 renvoie A4-A5-null
+		for(int i=0;i<possibleDest.length;i++){
+			if(issetlc(caseName) && issetlc(possibleDest[i]) && caseName != (possibleDest[i])){
+				possibleDestVerif[i] = possibleDest[i];
 			}
 		}
-		return ScL;
+
+		for(int i=0;i<possibleDestVerif.length;i++){
+			if(possibleDestVerif[i] != null){
+				String src = possibleDest[i];
+				int x1 = setCo('L', src.charAt(0));
+				int y1 = setCo('N', src.charAt(1));
+				Sc += addSc(couleur, x1, y1, 0);
+				System.out.println("   |"+(i+1)+" - "+src+" = "+state[x1][y1]+" vaut += "+Sc);
+			}
+		}
+		System.out.println();
+
+		return Sc;
+
 	}
 
 	/**
@@ -936,26 +812,50 @@ public class StuckWin {
 	 * @param coef coéficient de force à appliquer au score de la case 
 	 * 
 	 * @return ScL nouveau score de la case
-	 */
-	public int addSc(int ScL, char couleur, int x, int y, int coef){
-		if(couleur == joueurs[0]){
-			switch(state[x][y]){
-				case 'R': ScL +=5*coef; break;
-				case 'B': ScL +=10*coef; break;
-				case '.': ScL +=1*coef; break;
-				case '-': ScL +=5*coef; break;
-				default: ScL +=0; 
+	**/
+	public double addSc(char couleur, int x, int y, int coef){
+		System.out.println("Le coef = "+coef);
+		int ScL=0;
+		boolean a = false;
+
+		if(coef == 0){
+			
+			String src = ""+LISTLETTER[x]+LISTNUMBER[y];
+			String[] possibleDst = possibleDests(couleur, x, y);
+
+			for(int i=0;i<possibleDst.length;i++){
+				if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) == Result.OK){
+					a = true;
+				}
+				System.out.println(a);
 			}
-		}else if(couleur == joueurs[1]){
-			switch(state[x][y]){
-				case 'R': ScL +=10*coef; break;
-				case 'B': ScL +=5*coef; break;
-				case '.': ScL +=1*coef; break;
-				case '-': ScL +=5*coef; break;
-				default: ScL +=0; 
+
+			if(a){
+				for(int i=0;i<possibleDst.length;i++){
+					if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) != Result.OK){
+						switch(state[x][y]){
+							case 'R': ScL += 20; break;
+							case 'B': ScL += 10; break;
+							case '-': ScL += 10; break;
+						}
+					}
+				}
 			}
+
+			
+			return ScL;
 		}
-		// System.out.println("debug AddSc couleur = "+couleur+" x ="+x+" y="+y+" == "+state[x][y]+" vaut donc "+ScL);	
+
+
+		switch(state[x][y]){
+			case 'R': ScL +=10/coef; break;
+			case 'B': ScL +=10/coef; break;
+			case '.': ScL +=1/coef; break;
+			case '-': ScL +=10/coef; break;
+			default: ScL +=0; 
+		}
+
+
 		return ScL;
 	}
 
@@ -1071,7 +971,6 @@ public class StuckWin {
 
 		return move; 
 	}
-
 
 	/**
 	 * Dessine les cases de déplacements possibles
