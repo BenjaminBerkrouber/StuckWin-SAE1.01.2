@@ -716,30 +716,26 @@ public class StuckWin {
 	 * @param couleur la couleur actuelle du joueur
 	 * @return la meilleur case à jouer pour le joueur.
 	 */
-	String bestSrc(char couleur){
+	public String bestSrc(char couleur){
 		String src;
-		int index=0;
-		String srcSave="A1";
-		int scCase=0;
-		int scCaseSave=0;
-
-		for(int i=0;i<state.length;i++){
-			for(int j=0;j<state[i].length;j++){
-				if(state[i][j]==couleur){
+		int scCase = 0;
+		int scCaseSave = 0;
+		String srcSave = "A1";
+	
+		for(int i=0; i<state.length; i++){
+			for(int j=0; j<state[i].length; j++){
+				if(state[i][j] == couleur){
 					src = ""+LISTLETTER[i]+LISTNUMBER[j];					
 					String[] possibleDst = possibleDests(couleur, i, j);
 					
 					if(deplace(couleur, src, possibleDst[0], ModeMvt.SIMU) == Result.OK 
 						|| deplace(couleur, src, possibleDst[1], ModeMvt.SIMU) == Result.OK 
 						|| deplace(couleur, src, possibleDst[2], ModeMvt.SIMU) == Result.OK){
-							System.out.println(src);
-							System.out.println(ConsoleColors.RED+"entrer index "+index+ConsoleColors.RESET);
-							scCase = AttribSc(src, couleur, 0, index);
+						scCase = AttribSc(src, couleur, 0, 0);
 					}
-
-					if(scCase > scCaseSave ){
+	
+					if(scCase > scCaseSave){
 						srcSave = src;
-						scCaseSave = scCase;
 					}
 				}
 			}
@@ -747,21 +743,20 @@ public class StuckWin {
 		return srcSave;
 	}
 
-	String bestDst(String src, char couleur){
+	public String bestDst(String src, char couleur){
 		String dst;
-		String dstSave="A1";
-		int scDst=0;
-		int scDstSave=0;
+		String dstSave = "A1";
+		int scDst = 0;
+		int scDstSave = 0;
 
-		int x= setCo('L', src.charAt(0));
-		int y= setCo('N', src.charAt(1));
+		int x = setCo('L', src.charAt(0));
+		int y = setCo('N', src.charAt(1));
 
 		String[] possibleDest = possibleDests(couleur, x, y);
-		for(int i=0;i<possibleDest.length;i++){
-			// System.out.println("déplacement possible : "+possibleDest[i]);
+		for(int i=0; i<possibleDest.length; i++){
 			if(deplace(couleur, src, possibleDest[i], ModeMvt.SIMU) == Result.OK){
 				dst = possibleDest[i];
-				scDst = AttribSc(dst, couleur, 0, 1);
+				scDst = AttribSc(dst, couleur, 0, 0);
 				
 				if(scDst > scDstSave){
 					scDstSave = scDst; 
@@ -772,34 +767,33 @@ public class StuckWin {
 		return dstSave;
 	}
 
-
 	public int AttribSc(String caseName, char couleur, int Sc, int index){
-		int x= setCo('L', caseName.charAt(0));
-		int y= setCo('N', caseName.charAt(1));
 		
-		String[] possibleDest = possibleDests(couleur, x, y);
-		String[] possibleDestVerif = new String[3];
+		int x = setCo('L', caseName.charAt(0));
+		int y = setCo('N', caseName.charAt(1));
 
-		// A3 renvoie A4-A5-null
-		for(int i=0;i<possibleDest.length;i++){
-			if(issetlc(caseName) && issetlc(possibleDest[i]) && caseName != (possibleDest[i])){
-				possibleDestVerif[i] = possibleDest[i];
-			}
-		}
+		Sc += addSc(couleur, x, y, index);
 
-		for(int i=0;i<possibleDestVerif.length;i++){
-			if(possibleDestVerif[i] != null){
-				String src = possibleDest[i];
-				int x1 = setCo('L', src.charAt(0));
-				int y1 = setCo('N', src.charAt(1));
-				Sc += addSc(couleur, x1, y1, 0);
-				System.out.println("   |"+(i+1)+" - "+src+" = "+state[x1][y1]+" vaut += "+Sc);
-			}
-		}
-		System.out.println();
+		// String[] possibleDest = possibleDests(couleur, x, y);
+		// List<String> possibleDestVerif = new ArrayList<>();
 
+		// for(int i=0; i<possibleDest.length; i++){
+		// 	if(issetlc(caseName) && issetlc(possibleDest[i]) && !caseName.equals(possibleDest[i])){
+		// 		possibleDestVerif.add(possibleDest[i]);
+		// 	}
+		// }
+	
+		// if(possibleDestVerif.size() == 0){
+		// 	return Sc;
+		// }
+		// System.out.println();
+		// System.out.println("test pour : "+caseName);
+		// for(int i=0; i<possibleDestVerif.size(); i++){
+		// 	String src = possibleDestVerif.get(i);
+		// 	// Sc = AttribSc(src, couleur, Sc, index+1);
+		// }	
+			
 		return Sc;
-
 	}
 
 	/**
@@ -813,49 +807,62 @@ public class StuckWin {
 	 * 
 	 * @return ScL nouveau score de la case
 	**/
-	public double addSc(char couleur, int x, int y, int coef){
-		System.out.println("Le coef = "+coef);
-		int ScL=0;
+	public double addSc(char couleur, int x, int y, int index){
+		double ScL = 0;
 		boolean a = false;
+		String src = ""+LISTLETTER[x]+LISTNUMBER[y];
 
-		if(coef == 0){
-			
-			String src = ""+LISTLETTER[x]+LISTNUMBER[y];
+		System.out.println("");
+		System.out.println("addSc : "+ src + " index-"+index+" vaut : "+ state[x][y]);
+	
+		// Cas particulier L0
+		if(index == 0){
+			System.out.println("---L0---");
 			String[] possibleDst = possibleDests(couleur, x, y);
-
-			for(int i=0;i<possibleDst.length;i++){
+	
+			for(int i=0; i<possibleDst.length; i++){
 				if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) == Result.OK){
 					a = true;
 				}
-				System.out.println(a);
 			}
 
 			if(a){
-				for(int i=0;i<possibleDst.length;i++){
+				for(int i=0; i<possibleDst.length; i++){
+					System.out.println(possibleDst[i]);
 					if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) != Result.OK){
+						System.out.println("block");
 						switch(state[x][y]){
-							case 'R': ScL += 20; break;
-							case 'B': ScL += 10; break;
-							case '-': ScL += 10; break;
+							case 'R': ScL += 40; break;
+							case 'B': ScL += 20; break;
+							case '-': ScL += 20; break;
+							case '.': ScL += 10; break;
+						}
+					}
+					else{
+						System.out.println("pas block");
+						switch(state[x][y]){
+							case 'R': ScL += 10.0; break;
+							case 'B': ScL += 10.0; break;
+							case '.': ScL += 1.0; break;
+							case '-': ScL += 10.0; break;
+							default: ScL += 0; 
 						}
 					}
 				}
 			}
-
-			
 			return ScL;
 		}
 
-
+		// Score Case devant
+	
 		switch(state[x][y]){
-			case 'R': ScL +=10/coef; break;
-			case 'B': ScL +=10/coef; break;
-			case '.': ScL +=1/coef; break;
-			case '-': ScL +=10/coef; break;
-			default: ScL +=0; 
+			case 'R': ScL += 10.0; break;
+			case 'B': ScL += 10.0; break;
+			case '.': ScL += 1.0; break;
+			case '-': ScL += 10.0; break;
+			default: ScL += 0; 
 		}
-
-
+	
 		return ScL;
 	}
 
@@ -1224,36 +1231,61 @@ public class StuckWin {
 		System.out.println("");
 
 	}
+
 	public static void main(String[] args) {
 		StuckWin jeu = new StuckWin();
 
 		printHelpGame();
+
+		if(args.length > 0){
+			int n = Integer.parseInt(args[0]);
+			if(n==1){
+				System.out.println("Player vs IA");
+				jeu.CurrentModePlay = ModeJeuPlay.PlayervIA;
+			}else if(n==2){
+				System.out.println("Player vs IA2");
+				jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2;
+			}else{
+				System.out.println(" 2 Séléctionner un mode de jeu: ");
+				int ModeJeuPlayValue = input.nextInt();
+				
+				switch(ModeJeuPlayValue){
+					case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+					case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+					case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+					case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+				}
+			}
+		}else{
+			System.out.println("Séléctionner un mode de jeu: ");
+			int ModeJeuPlayValue = input.nextInt();
+			
+			switch(ModeJeuPlayValue){
+				case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+				case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+				case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+				case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+			}
+	
+		}
 		
-		System.out.println("Séléctionner un mode de jeu: ");
-		int ModeJeuPlayValue = input.nextInt();
-
-		System.out.println("Séléctionner un mode d'affichage :");
-		int ModeJeuAfficheValue = input.nextInt();
-
-		System.out.println("Voulez-vous sauvegarder la partie .");
-		int ModeJeuSaveValue = input.nextInt();
-
-		switch(ModeJeuPlayValue){
-			case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
-			case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
-			case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
-			case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
-		}
-
-		switch(ModeJeuAfficheValue){
-			case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
-			case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
-		}
-
-		switch(ModeJeuSaveValue){
-			case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
-			case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
-		}
+	
+			System.out.println("Séléctionner un mode d'affichage :");
+			int ModeJeuAfficheValue = input.nextInt();
+	
+			System.out.println("Voulez-vous sauvegarder la partie .");
+			int ModeJeuSaveValue = input.nextInt();
+	
+			switch(ModeJeuAfficheValue){
+				case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
+				case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
+			}
+	
+			switch(ModeJeuSaveValue){
+				case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
+				case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
+			}
+		
 		
 		String src = "";
 		String dest;
@@ -1289,7 +1321,7 @@ public class StuckWin {
 				System.out.println("status : " + status + " partie : " + partie);
 
 				if(jeu.CurrentModeAffiche == ModeJeuAffiche.GUI){
-					StdDraw.text(0, -9, "status : "+status + " partie : " + partie);
+					StdDraw.text(0, -9, "status : "+status +" partie : " + partie);
 					jeu.affiche();
 					StdDraw.clear();
 					StdDraw.picture(0, 0, "back.jpg", 25, 25);
