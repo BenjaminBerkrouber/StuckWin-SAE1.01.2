@@ -7,6 +7,7 @@
  */
 
 import java.io.BufferedWriter;
+import java.io.Console;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public class StuckWin {
 	public static final List<String> coup = new ArrayList<>();
 	public static final List<String> etat = new ArrayList<>();
 	public static final List<String> win = new ArrayList<>();
-
+	
 	// 
 	final int SIZE = 8;
 
@@ -701,13 +702,13 @@ public class StuckWin {
 		String[] move = new String[2];
 
 		move[0] = bestSrc(couleur);
-		move[1] = "A1";
-		// move[1] = bestDst(move[0], couleur);
+		move[1] = bestDst(move[0], couleur);
 
 		System.out.println(move[0]);
 		System.out.println(move[1]);
 
 		return move;
+
 	}
 
 	/**
@@ -736,6 +737,7 @@ public class StuckWin {
 	
 					if(scCase > scCaseSave){
 						srcSave = src;
+						scCaseSave = scCase;
 					}
 				}
 			}
@@ -756,7 +758,7 @@ public class StuckWin {
 		for(int i=0; i<possibleDest.length; i++){
 			if(deplace(couleur, src, possibleDest[i], ModeMvt.SIMU) == Result.OK){
 				dst = possibleDest[i];
-				scDst = AttribSc(dst, couleur, 0, 0);
+				scDst = AttribSc(dst, couleur, 0, 1);
 				
 				if(scDst > scDstSave){
 					scDstSave = scDst; 
@@ -769,30 +771,23 @@ public class StuckWin {
 
 	public int AttribSc(String caseName, char couleur, int Sc, int index){
 		
+		// System.out.println("");
+		// System.out.println(ConsoleColors.RED+"---L"+index+"---"+ConsoleColors.RESET);
+		// System.out.println(caseName);
+
+		if(index > 12){return Sc;}
+		
 		int x = setCo('L', caseName.charAt(0));
 		int y = setCo('N', caseName.charAt(1));
 
-		Sc += addSc(couleur, x, y, index);
+		String[] possibleDest = possibleDests(couleur, x, y);
 
-		// String[] possibleDest = possibleDests(couleur, x, y);
-		// List<String> possibleDestVerif = new ArrayList<>();
-
-		// for(int i=0; i<possibleDest.length; i++){
-		// 	if(issetlc(caseName) && issetlc(possibleDest[i]) && !caseName.equals(possibleDest[i])){
-		// 		possibleDestVerif.add(possibleDest[i]);
-		// 	}
-		// }
-	
-		// if(possibleDestVerif.size() == 0){
-		// 	return Sc;
-		// }
-		// System.out.println();
-		// System.out.println("test pour : "+caseName);
-		// for(int i=0; i<possibleDestVerif.size(); i++){
-		// 	String src = possibleDestVerif.get(i);
-		// 	// Sc = AttribSc(src, couleur, Sc, index+1);
-		// }	
-			
+		for(int i=0; i<possibleDest.length; i++){
+			String src = possibleDest[i];
+			Sc += addSc(couleur, x, y, index);
+			// System.out.println(Sc);
+			Sc = AttribSc(src, couleur, Sc, index+1);
+		}
 		return Sc;
 	}
 
@@ -808,62 +803,37 @@ public class StuckWin {
 	 * @return ScL nouveau score de la case
 	**/
 	public double addSc(char couleur, int x, int y, int index){
-		double ScL = 0;
-		boolean a = false;
+
+		double Sc = 0;
 		String src = ""+LISTLETTER[x]+LISTNUMBER[y];
 
-		System.out.println("");
-		System.out.println("addSc : "+ src + " index-"+index+" vaut : "+ state[x][y]);
-	
+		// System.out.println("=> addSc : "+ src +" = "+ state[x][y]+" vaut "+Sc);
+		
 		// Cas particulier L0
 		if(index == 0){
-			System.out.println("---L0---");
-			String[] possibleDst = possibleDests(couleur, x, y);
-	
-			for(int i=0; i<possibleDst.length; i++){
-				if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) == Result.OK){
-					a = true;
-				}
+			switch(state[x][y]){
+				case 'R': Sc += 100; break;
+				case 'B': Sc += 80; break;
+				case '-': Sc += 70; break;
+				case '.': Sc += 0; break;
+				default: Sc += 0; 
 			}
-
-			if(a){
-				for(int i=0; i<possibleDst.length; i++){
-					System.out.println(possibleDst[i]);
-					if(deplace(couleur, src, possibleDst[i], ModeMvt.SIMU) != Result.OK){
-						System.out.println("block");
-						switch(state[x][y]){
-							case 'R': ScL += 40; break;
-							case 'B': ScL += 20; break;
-							case '-': ScL += 20; break;
-							case '.': ScL += 10; break;
-						}
-					}
-					else{
-						System.out.println("pas block");
-						switch(state[x][y]){
-							case 'R': ScL += 10.0; break;
-							case 'B': ScL += 10.0; break;
-							case '.': ScL += 1.0; break;
-							case '-': ScL += 10.0; break;
-							default: ScL += 0; 
-						}
-					}
-				}
-			}
-			return ScL;
+			return Sc;
 		}
 
 		// Score Case devant
-	
 		switch(state[x][y]){
-			case 'R': ScL += 10.0; break;
-			case 'B': ScL += 10.0; break;
-			case '.': ScL += 1.0; break;
-			case '-': ScL += 10.0; break;
-			default: ScL += 0; 
+			case 'R': Sc += 40.0/index; break;
+			case 'B': Sc += 20.0/index; break;
+			case '.': Sc += 1.0/index; break;
+			case '-': Sc += 5.0/index; break;
+			default: Sc += 0; 
 		}
+
+
+		// Score Case derrier
 	
-		return ScL;
+		return Sc;
 	}
 
 	/**
@@ -896,17 +866,22 @@ public class StuckWin {
 			bufferedWriter.newLine();
 			bufferedWriter.write("Groupe 40 : , Berkrouber Benjamin , Taskin Semih");
 			bufferedWriter.newLine();
-			bufferedWriter.write("Joueur, Src, Dest, Etats");
+			// bufferedWriter.write("Joueur, Src, Dest, Etats");
+			bufferedWriter.write("Gagnant");
 			bufferedWriter.newLine();
 			
 			// Ecrit les coup ainsi que leur statue dans le fichier trace
-			for(int i=0; i <coup.size(); i++){
-				bufferedWriter.write(coup.get(i));
+			// for(int i=0; i <coup.size(); i++){
+			// 	bufferedWriter.write(coup.get(i));
+			// 	bufferedWriter.newLine();
+			// }
+
+
+			// Ecrit les gagnant et le nombre de coup dans le fichier trace
+			for(int i=0; i <win.size(); i++){
+				bufferedWriter.write(win.get(i));
 				bufferedWriter.newLine();
 			}
-
-			// Ecrit le gagnant de la partie 
-			bufferedWriter.write(win.get(0));
 
 		} catch(IOException e){
 			e.printStackTrace();
@@ -1233,114 +1208,119 @@ public class StuckWin {
 	}
 
 	public static void main(String[] args) {
-		StuckWin jeu = new StuckWin();
 
-		printHelpGame();
+		for (int i = 0 ; i < 20 ; i++) {
+			StuckWin jeu = new StuckWin();
 
-		if(args.length > 0){
-			int n = Integer.parseInt(args[0]);
-			if(n==1){
-				System.out.println("Player vs IA");
-				jeu.CurrentModePlay = ModeJeuPlay.PlayervIA;
-			}else if(n==2){
-				System.out.println("Player vs IA2");
-				jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2;
-			}else{
-				System.out.println(" 2 Séléctionner un mode de jeu: ");
-				int ModeJeuPlayValue = input.nextInt();
+			// printHelpGame();
+
+			// if(args.length > 0){
+			// 	int n = Integer.parseInt(args[0]);
+			// 	if(n==1){
+			// 		System.out.println("Player vs IA");
+			// 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA;
+			// 	}else if(n==2){
+			// 		System.out.println("Player vs IA2");
+			// 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2;
+			// 	}else{
+			// 		System.out.println(" 2 Séléctionner un mode de jeu: ");
+			// 		int ModeJeuPlayValue = input.nextInt();
+					
+			// 		switch(ModeJeuPlayValue){
+			// 			case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+			// 			case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+			// 			case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+			// 			case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+			// 		}
+			// 	}
+			// }else{
+			// 	System.out.println("Séléctionner un mode de jeu: ");
+			// 	int ModeJeuPlayValue = input.nextInt();
 				
-				switch(ModeJeuPlayValue){
-					case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
-					case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
-					case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
-					case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
-				}
-			}
-		}else{
-			System.out.println("Séléctionner un mode de jeu: ");
-			int ModeJeuPlayValue = input.nextInt();
+			// 	switch(ModeJeuPlayValue){
+			// 		case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+			// 		case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+			// 		case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+			// 		case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+			// 	}
+		
+			// }			
+		
+			// System.out.println("Séléctionner un mode d'affichage :");
+			// int ModeJeuAfficheValue = input.nextInt();
+	
+			// System.out.println("Voulez-vous sauvegarder la partie .");
+			// int ModeJeuSaveValue = input.nextInt();
+	
+			// switch(ModeJeuAfficheValue){
+			// 	case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
+			// 	case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
+			// }
+	
+			// switch(ModeJeuSaveValue){
+			// 	case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
+			// 	case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
+			// }
+
+			jeu.CurrentModeAffiche = ModeJeuAffiche.Console;
+			jeu.CurrentModeSave = ModeJeuSave.YES;
+			jeu.CurrentModePlay = ModeJeuPlay.IAvIA2;
 			
-			switch(ModeJeuPlayValue){
-				case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
-				case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
-				case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
-				case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
-			}
-	
-		}
-		
-	
-			System.out.println("Séléctionner un mode d'affichage :");
-			int ModeJeuAfficheValue = input.nextInt();
-	
-			System.out.println("Voulez-vous sauvegarder la partie .");
-			int ModeJeuSaveValue = input.nextInt();
-	
-			switch(ModeJeuAfficheValue){
-				case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
-				case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
-			}
-	
-			switch(ModeJeuSaveValue){
-				case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
-				case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
-			}
-		
-		
-		String src = "";
-		String dest;
-		String[] reponse;
-		Result status;
-		char partie = 'N';
-		char curCouleur = jeu.joueurs[0];
-		char nextCouleur = jeu.joueurs[1];
-		char tmp;
-		int cpt = 0;
+			String src = "";
+			String dest;
+			String[] reponse;
+			Result status;
+			char partie = 'N';
+			char curCouleur = jeu.joueurs[0];
+			char nextCouleur = jeu.joueurs[1];
+			char tmp;
+			int cpt = 0;
 
-		if(jeu.CurrentModeAffiche == ModeJeuAffiche.GUI){
-			StdDraw.setXscale(-10.5, 10.5);
-			StdDraw.setYscale(-10.5, 10.5);
-			StdDraw.enableDoubleBuffering();
-			StdDraw.setTitle("StuckWin");
-			StdDraw.picture(0, 0, "back.jpg", 25, 25);	
-		}
+			if(jeu.CurrentModeAffiche == ModeJeuAffiche.GUI){
+				StdDraw.setXscale(-10.5, 10.5);
+				StdDraw.setYscale(-10.5, 10.5);
+				StdDraw.enableDoubleBuffering();
+				StdDraw.setTitle("StuckWin");
+				StdDraw.picture(0, 0, "back.jpg", 25, 25);	
+			}
 
-		// version console
-		do {
-			// séquence pour Bleu ou rouge
-			jeu.affiche();
+			// version console
 			do {
-				status = Result.EXIT;
-				reponse = jeu.jouer(curCouleur);
-				src = reponse[0];
-				dest = reponse[1];
-				if ("q".equals(src))
-					return;
-				status = jeu.deplace(curCouleur, src, dest, ModeMvt.REAL);
-				partie = jeu.finPartie(nextCouleur);
-				System.out.println("status : " + status + " partie : " + partie);
+				// séquence pour Bleu ou rouge
+				jeu.affiche();
+				do {
+					status = Result.EXIT;
+					reponse = jeu.jouer(curCouleur);
+					src = reponse[0];
+					dest = reponse[1];
+					if ("q".equals(src))
+						return;
+					status = jeu.deplace(curCouleur, src, dest, ModeMvt.REAL);
+					partie = jeu.finPartie(nextCouleur);
+					System.out.println("status : " + status + " partie : " + partie);
 
-				if(jeu.CurrentModeAffiche == ModeJeuAffiche.GUI){
-					StdDraw.text(0, -9, "status : "+status +" partie : " + partie);
-					jeu.affiche();
-					StdDraw.clear();
-					StdDraw.picture(0, 0, "back.jpg", 25, 25);
-				}
+					if(jeu.CurrentModeAffiche == ModeJeuAffiche.GUI){
+						StdDraw.text(0, -9, "status : "+status +" partie : " + partie);
+						jeu.affiche();
+						StdDraw.clear();
+						StdDraw.picture(0, 0, "back.jpg", 25, 25);
+					}
 
-			} while (status != Result.OK && partie == 'N');
-			tmp = curCouleur;
-			curCouleur = nextCouleur;
-			nextCouleur = tmp;
-			cpt++;
-		} while (partie == 'N'); // TODO affiche vainqueur
-		jeu.affiche();
-		System.out.printf("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
+				} while (status != Result.OK && partie == 'N');
+				tmp = curCouleur;
+				curCouleur = nextCouleur;
+				nextCouleur = tmp;
+				cpt++;
+			} while (partie == 'N'); // TODO affiche vainqueur
+			jeu.affiche();
+			System.out.printf("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
 
-		
-		if(jeu.CurrentModeSave == ModeJeuSave.YES){
-			win.add("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
-			printGame(); 
-			System.out.println("Vous pouvez retrouver le récapitulatif de votre partie le fichier : " );
+			
+			if(jeu.CurrentModeSave == ModeJeuSave.YES){
+				win.add("Partie numéro : "+i+" : Victoire : " + partie + " (" + (cpt / 2) + " coups)");
+				System.out.println("Vous pouvez retrouver le récapitulatif de votre partie dans le dossier StuckWin" );
+			}
 		}
+		printGame(); 
 	}
 }
