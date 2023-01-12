@@ -708,7 +708,6 @@ public class StuckWin {
 		System.out.println(move[1]);
 
 		return move;
-
 	}
 
 	/**
@@ -745,6 +744,14 @@ public class StuckWin {
 		return srcSave;
 	}
 
+
+	/**
+	 * Cherche le meilleur déplacement à faire pour le joueur.
+	 * 
+	 * @param src la case depuis laquel nous allons jouer
+	 * @param couleur la couleur actuelle du joueur
+	 * @return la meilleur case à jouer pour le joueur.
+	 */
 	public String bestDst(String src, char couleur){
 		String dst;
 		String dstSave = "A1";
@@ -769,13 +776,19 @@ public class StuckWin {
 		return dstSave;
 	}
 
-	public int AttribSc(String caseName, char couleur, int Sc, int index){
-		
-		// System.out.println("");
-		// System.out.println(ConsoleColors.RED+"---L"+index+"---"+ConsoleColors.RESET);
-		// System.out.println(caseName);
 
-		if(index > 12){return Sc;}
+	/**
+	 * Attribue un score à la case actuelle
+	 * 
+	 * @caseName la case dont on cherche le score
+	 * @param couleur la couleur actuelle du joueur
+	 * @param Sc le score actuelle
+	 * @param index le niveau de profondeur auquel nous allons rechercher.
+	 * @return Le score actuelle de la case.
+	 */
+	public int AttribSc(String caseName, char couleur, int Sc, int index){
+
+		if(index > 4){return Sc;}
 		
 		int x = setCo('L', caseName.charAt(0));
 		int y = setCo('N', caseName.charAt(1));
@@ -785,7 +798,6 @@ public class StuckWin {
 		for(int i=0; i<possibleDest.length; i++){
 			String src = possibleDest[i];
 			Sc += addSc(couleur, x, y, index);
-			// System.out.println(Sc);
 			Sc = AttribSc(src, couleur, Sc, index+1);
 		}
 		return Sc;
@@ -794,11 +806,10 @@ public class StuckWin {
 	/**
 	 * Attribue un score à la case (NON FINI)
 	 * 
-	 * @param ScL score actuelle de la ligne
 	 * @param couleur couleur du pion à jouer
 	 * @param x coordonnée x de la case 
 	 * @param y coordonnée y de la case
-	 * @param coef coéficient de force à appliquer au score de la case 
+	 * @param index coéficient de force à appliquer au score de la case 
 	 * 
 	 * @return ScL nouveau score de la case
 	**/
@@ -806,33 +817,49 @@ public class StuckWin {
 
 		double Sc = 0;
 		String src = ""+LISTLETTER[x]+LISTNUMBER[y];
-
-		// System.out.println("=> addSc : "+ src +" = "+ state[x][y]+" vaut "+Sc);
 		
-		// Cas particulier L0
-		if(index == 0){
+		if(couleur == 'R'){
+			if(index == 0){
+				switch(state[x][y]){
+					case 'R': Sc += 10000; break;
+					case 'B': Sc += 100; break;
+					case '-': Sc += 1000; break;
+					case '.': Sc += 0; break;
+					default: Sc += 0; 
+				}
+				return Sc;
+			}
+	
+			// Score Case devant
 			switch(state[x][y]){
-				case 'R': Sc += 100; break;
-				case 'B': Sc += 80; break;
-				case '-': Sc += 70; break;
-				case '.': Sc += 0; break;
+				case 'R': Sc += 1000.0/index; break;
+				case 'B': Sc += 10.0/index; break;
+				case '.': Sc += 1.0/index; break;
+				case '-': Sc += 100.0/index; break;
+				default: Sc += 0; 
+			}	
+		}else if (couleur == 'B'){
+			// Cas particulier L0
+			if(index == 0){
+				switch(state[x][y]){
+					case 'R': Sc += 100; break;
+					case 'B': Sc += 10000; break;
+					case '-': Sc += 1000; break;
+					case '.': Sc += 0; break;
+					default: Sc += 0; 
+				}
+				return Sc;
+			}
+	
+			// Score Case devant
+			switch(state[x][y]){
+				case 'R': Sc += 10.0/index; break;
+				case 'B': Sc += 1000.0/index; break;
+				case '.': Sc += 1.0/index; break;
+				case '-': Sc += 100.0/index; break;
 				default: Sc += 0; 
 			}
-			return Sc;
-		}
-
-		// Score Case devant
-		switch(state[x][y]){
-			case 'R': Sc += 40.0/index; break;
-			case 'B': Sc += 20.0/index; break;
-			case '.': Sc += 1.0/index; break;
-			case '-': Sc += 5.0/index; break;
-			default: Sc += 0; 
-		}
-
-
-		// Score Case derrier
-	
+		}	
 		return Sc;
 	}
 
@@ -843,7 +870,7 @@ public class StuckWin {
 
 		// Crée le nom du fichier trace de partie
 		int numDoc =0;
-		File file;
+		File file; 
 
 		// Recherche le dernier nom de fichier pour crée le suivant
 		do{
@@ -862,26 +889,23 @@ public class StuckWin {
 		try(BufferedWriter bufferedWriter = new BufferedWriter( new FileWriter(file))){
 			
 			// Ecrit les paramètre 
-			bufferedWriter.write("StuckWin"+","+"1V1");
+			bufferedWriter.write("StuckWin");
 			bufferedWriter.newLine();
 			bufferedWriter.write("Groupe 40 : , Berkrouber Benjamin , Taskin Semih");
 			bufferedWriter.newLine();
-			// bufferedWriter.write("Joueur, Src, Dest, Etats");
+			bufferedWriter.write("Joueur, Src, Dest, Etats");
 			bufferedWriter.write("Gagnant");
-			bufferedWriter.newLine();
+			
+
 			
 			// Ecrit les coup ainsi que leur statue dans le fichier trace
-			// for(int i=0; i <coup.size(); i++){
-			// 	bufferedWriter.write(coup.get(i));
-			// 	bufferedWriter.newLine();
-			// }
-
-
-			// Ecrit les gagnant et le nombre de coup dans le fichier trace
-			for(int i=0; i <win.size(); i++){
-				bufferedWriter.write(win.get(i));
-				bufferedWriter.newLine();
+			for(int i=0; i <coup.size(); i++){
+			 	bufferedWriter.write(coup.get(i));
+			 	bufferedWriter.newLine();
 			}
+
+			// Ecrit le gagnant de la partie 
+			bufferedWriter.write(win.get(0));
 
 		} catch(IOException e){
 			e.printStackTrace();
@@ -961,8 +985,6 @@ public class StuckWin {
 	 * @param couleur la couleur du pion à jouer
 	 */
 	void drawPossibleDest(String Case, char couleur){
-
-		System.out.println(Case);
 		int x = setCo('L', Case.charAt(0));
 		int y = setCo('N', Case.charAt(1));
 
@@ -1054,7 +1076,7 @@ public class StuckWin {
 				switch (couleur) {
 					case 'B':
 						System.out.println("Mouvement " + couleur);
-						mvtIa = jouerIA2(couleur);
+						mvtIa = jouerIA(couleur);
 						src = mvtIa[0];
 						dst = mvtIa[1];
 						System.out.println(src + "->" + dst);
@@ -1062,7 +1084,7 @@ public class StuckWin {
 					break;
 					case 'R':
 						System.out.println("Mouvement " + couleur);
-						mvtIa = jouerIA(couleur);
+						mvtIa = jouerIA2(couleur);
 						src = mvtIa[0];
 						dst = mvtIa[1];
 						System.out.println(src + "->" + dst);
@@ -1130,7 +1152,7 @@ public class StuckWin {
 				switch (couleur) {
 					case 'B':
 						System.out.println("Mouvement " + couleur);
-						mvtIa = jouerIA2(couleur);
+						mvtIa = jouerIA(couleur);
 						src = mvtIa[0];
 						dst = mvtIa[1];
 						System.out.println(src + "->" + dst);
@@ -1138,7 +1160,7 @@ public class StuckWin {
 					break;
 					case 'R':
 						System.out.println("Mouvement " + couleur);
-						mvtIa = jouerIA(couleur);
+						mvtIa = jouerIA2(couleur);
 						src = mvtIa[0];
 						dst = mvtIa[1];
 						System.out.println(src + "->" + dst);
@@ -1209,63 +1231,59 @@ public class StuckWin {
 
 	public static void main(String[] args) {
 
-		for (int i = 0 ; i < 20 ; i++) {
-			StuckWin jeu = new StuckWin();
+		StuckWin jeu = new StuckWin();
 
-			// printHelpGame();
+			 printHelpGame();
 
-			// if(args.length > 0){
-			// 	int n = Integer.parseInt(args[0]);
-			// 	if(n==1){
-			// 		System.out.println("Player vs IA");
-			// 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA;
-			// 	}else if(n==2){
-			// 		System.out.println("Player vs IA2");
-			// 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2;
-			// 	}else{
-			// 		System.out.println(" 2 Séléctionner un mode de jeu: ");
-			// 		int ModeJeuPlayValue = input.nextInt();
+			if(args.length > 0){
+			 	int n = Integer.parseInt(args[0]);
+			 	if(n==1){
+			 		System.out.println("Player vs IA");
+			 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA;
+			 	}else if(n==2){
+			 		System.out.println("Player vs IA2");
+			 		jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2;
+			 	}else{
+			 		System.out.println(" 2 Séléctionner un mode de jeu: ");
+			 		int ModeJeuPlayValue = input.nextInt();
 					
-			// 		switch(ModeJeuPlayValue){
-			// 			case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
-			// 			case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
-			// 			case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
-			// 			case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
-			// 		}
-			// 	}
-			// }else{
-			// 	System.out.println("Séléctionner un mode de jeu: ");
-			// 	int ModeJeuPlayValue = input.nextInt();
+			 		switch(ModeJeuPlayValue){
+			 			case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+			 			case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+			 			case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+			 			case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+			 		}
+			 	}
+			}else{
+			 	System.out.println("Séléctionner un mode de jeu: ");
+			 	int ModeJeuPlayValue = input.nextInt();
 				
-			// 	switch(ModeJeuPlayValue){
-			// 		case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
-			// 		case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
-			// 		case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
-			// 		case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
-			// 	}
-		
-			// }			
-		
-			// System.out.println("Séléctionner un mode d'affichage :");
-			// int ModeJeuAfficheValue = input.nextInt();
-	
-			// System.out.println("Voulez-vous sauvegarder la partie .");
-			// int ModeJeuSaveValue = input.nextInt();
-	
-			// switch(ModeJeuAfficheValue){
-			// 	case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
-			// 	case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
-			// }
-	
-			// switch(ModeJeuSaveValue){
-			// 	case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
-			// 	case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
-			// }
-
-			jeu.CurrentModeAffiche = ModeJeuAffiche.Console;
-			jeu.CurrentModeSave = ModeJeuSave.YES;
-			jeu.CurrentModePlay = ModeJeuPlay.IAvIA2;
+				switch(ModeJeuPlayValue){
+					case 0: jeu.CurrentModePlay = ModeJeuPlay.PlayervPayer; break;
+					case 1: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA; break;
+					case 2: jeu.CurrentModePlay = ModeJeuPlay.PlayervIA2; break;
+					case 3: jeu.CurrentModePlay = ModeJeuPlay.IAvIA2; break;
+				}
 			
+			}			
+		
+			System.out.println("Séléctionner un mode d'affichage :");
+			int ModeJeuAfficheValue = input.nextInt();
+	
+			System.out.println("Voulez-vous sauvegarder la partie .");
+			int ModeJeuSaveValue = input.nextInt();
+	
+			switch(ModeJeuAfficheValue){
+				case 0: jeu.CurrentModeAffiche = ModeJeuAffiche.Console; break;
+				case 1: jeu.CurrentModeAffiche = ModeJeuAffiche.GUI; break;
+			}
+	
+			switch(ModeJeuSaveValue){
+				case 0: jeu.CurrentModeSave = ModeJeuSave.NO; break;
+			 	case 1: jeu.CurrentModeSave = ModeJeuSave.YES; break;
+			}
+
+
 			String src = "";
 			String dest;
 			String[] reponse;
@@ -1314,13 +1332,11 @@ public class StuckWin {
 			} while (partie == 'N'); // TODO affiche vainqueur
 			jeu.affiche();
 			System.out.printf("Victoire : " + partie + " (" + (cpt / 2) + " coups)");
-
 			
 			if(jeu.CurrentModeSave == ModeJeuSave.YES){
-				win.add("Partie numéro : "+i+" : Victoire : " + partie + " (" + (cpt / 2) + " coups)");
+				printGame(); 
 				System.out.println("Vous pouvez retrouver le récapitulatif de votre partie dans le dossier StuckWin" );
 			}
 		}
-		printGame(); 
-	}
+
 }
