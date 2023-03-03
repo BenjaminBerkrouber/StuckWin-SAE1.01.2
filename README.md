@@ -93,7 +93,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Contact
 
 Twitter - [@benjami_bkr](https://twitter.com/@benjami_bkr)
-Mail - [benjamin@gmail.com](benjamin.berkrouber@gmail.com)
+
+Mail - benjamin.berkrouber@gmail.com
 
 Project Link: [https://github.com/BenjaminBerkrouber/SAE1.02](https://github.com/BenjaminBerkrouber/SAE1.02)
 
