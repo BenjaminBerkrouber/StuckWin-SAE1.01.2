@@ -92,7 +92,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@benjami_bkr](https://twitter.com/@benjami_bkr) - email
+Twitter - [@benjami_bkr](https://twitter.com/@benjami_bkr)
+Mail - [benjamin@gmail.com](benjamin.berkrouber@gmail.com)
 
 Project Link: [https://github.com/BenjaminBerkrouber/SAE1.02](https://github.com/BenjaminBerkrouber/SAE1.02)
 
