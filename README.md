@@ -25,7 +25,7 @@ Stuckwin is a game for two players with the following simple rules:
 - a token cannot skip one or more other tokens,
 - If, when it is his turn, a player has no more possibilities to move his chips, he wins the game,
 
-### Travail demander SAE0.1
+### work SAE0.1
 
 - Display the game board
 
@@ -35,7 +35,7 @@ Stuckwin is a game for two players with the following simple rules:
 
 - Check the end of the game and display the winner 
 
-### Travail demander SAE0.2
+### work SAE0.2
 
 - Design of an AI playing for the red pawns
 
@@ -43,7 +43,7 @@ Stuckwin is a game for two players with the following simple rules:
 
 - Analyze the results of the games played
 
-### Travail suplémentaire SAE0.1++
+### additional work SAE.101++
  
 - Design graphical interface with the StdDraw library
 
